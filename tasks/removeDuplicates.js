@@ -1,6 +1,6 @@
-const config = require('../config.json');
-const dupes = Array.from(require('../purge.json'));
-const emotes = Array.from(require('../emotes.json'));
+const config = require('../config/config.json');
+const dupes = Array.from(require('../resources/purge.json'));
+const emotes = Array.from(require('../resources/emotes.json'));
 
 module.exports = async function (client) {
   let guilds = Object.values(config.emoteGuilds);
