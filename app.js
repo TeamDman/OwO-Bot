@@ -17,14 +17,14 @@ let loading = setInterval(() => process.stdout.write('.'), 500);
 client.on('ready', () => {
     clearInterval(loading);
     client.log = function (text) {
-        term.log(text);
+        console.log(text);
         stream.write(`[${new Date().toLocaleString('en-ca')}]\t${text}\n`);
     };
     client.error = function (text) {
-        term.error(text);
+        console.error(text);
     };
     client.inspect = function (object) {
-        term.log(inspect(object));
+        console.log(inspect(object));
     };
 
     client.user.setActivity(config.presence, {type: config.presence_type});

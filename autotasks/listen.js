@@ -1,7 +1,7 @@
 module.exports = async function (client) {
     client.on('messageDelete', m => {
         if (m.author.bot) return;
-        client.inspect(m);
+        // client.inspect(m);
         client.log(`!!! ${m.author.tag}\t#${m.channel.name}\t${m.content}`);
         m.embeds.forEach(em => {
             client.log(`!!! ${m.author.tag}\t#${m.channel.name}\t ${em.type} embed:${em.url}`);
