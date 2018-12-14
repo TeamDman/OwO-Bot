@@ -1,4 +1,4 @@
-const config = require('../config.json');
+const config = require('../config/config.json');
 module.exports = async function (client) {
   client.guilds.filter(g => Object.values(config.emoteGuilds).includes(g.id)).forEach(async guild => {
   // guild = client.guilds.get(config.emoteGuilds.Teamymotes19);
@@ -7,7 +7,7 @@ module.exports = async function (client) {
 };
 
 async function setup (client, guild) {
-  if (guild.id == config.emoteGuilds['Teamymotes0']) return;
+  if (guild.id === config.emoteGuilds['Teamymotes0']) return;
   try {
     await guild.setIcon('./icon.png');
   } catch (e) {

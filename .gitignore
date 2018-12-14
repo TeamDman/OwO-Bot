@@ -1,2 +1,5 @@
+/.idea/
+/node_modules/
 /config/token.json
 token.json
+logs.txt

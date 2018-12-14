@@ -1,5 +1,5 @@
-const config = require('../config.json');
-const emotes = Array.from(require('../emotes.json'));
+const config = require('../config/config.json');
+const emotes = Array.from(require('../resources/emotes.json'));
 const glob = require('glob');
 const regexName = /dump\/dump\/(\w+)/;
 const regexFile = /dump\/dump\/(.*)/;
