@@ -1,6 +1,6 @@
 'use strict';
 require('dotenv').config();
-const config = require('./config');
+const config = require('./config.json');
 const inspect = require('util').inspect;
 const discord = require('discord.js');
 const client = new discord.Client();
@@ -11,7 +11,7 @@ console.log(String.raw` / / / / | /| / / / / /  / __  / __ \/ __/`);
 console.log(String.raw`/ /_/ /| |/ |/ / /_/ /  / /_/ / /_/ / /_  `);
 console.log(String.raw`\____/ |__/|__/\____/  /_____/\____/\__/  `);
 
-const stream = require('fs').createWriteStream('logs.txt', {flags: 'a'});
+const stream = require('fs').createWriteStream('./app/logs.txt', {flags: 'a'});
 process.stdout.write('Loading');
 
 let loading = setInterval(() => process.stdout.write('.'), 500);
@@ -34,7 +34,7 @@ client.on('ready', () => {
 
     require('./utils.js').init(client);
     require('./commands.js').init(client);
-    require('fs').readdir('./autotasks/', (err, files) => {
+    require('fs').readdir('app/autotasks/', (err, files) => {
         if (err) return console.error(err);
         files.forEach(file => {
             require(`./autotasks/${file}`)(client);
