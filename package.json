@@ -18,6 +18,8 @@
   "homepage": "https://github.com/TeamDman/OwO-Bot#readme",
   "dependencies": {
     "discord.js": "^11.4.2",
+    "dotenv": "^6.2.0",
+    "github-create-issue": "^2.0.0",
     "glob": "^7.1.3"
   }
 }
