@@ -1,5 +1,6 @@
 'use strict';
-const config = require('./config/config');
+require('dotenv').config();
+const config = require('./config');
 const inspect = require('util').inspect;
 const discord = require('discord.js');
 const client = new discord.Client();
@@ -17,8 +18,9 @@ let loading = setInterval(() => process.stdout.write('.'), 500);
 client.on('ready', () => {
     clearInterval(loading);
     client.log = function (text) {
+        text = `[${new Date().toLocaleString('en-ca')}]\t${text}\n`;
         console.log(text);
-        stream.write(`[${new Date().toLocaleString('en-ca')}]\t${text}\n`);
+        stream.write(text);
     };
     client.error = function (text) {
         console.error(text);
@@ -40,4 +42,5 @@ client.on('ready', () => {
     });
 });
 
-client.login(require('./config/token.json').token);
+client.on('error', (err) => console.error(err));
+client.login(process.env.DISCORD_TOKEN).catch(e => console.error(`Failed to log in, aborting: ${e}`));

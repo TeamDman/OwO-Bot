@@ -17,7 +17,7 @@ utils.getRole = identifier => {
     }
     for (let guild of client.guilds.values()) {
         for (let role of guild.roles.values()) {
-            if (role.id === identifier || role.name.replace(/\s+/g, '_').toLowerCase() === identifier) {
+            if (role.id == identifier || role.name.replace(/\s+/g, '_').toLowerCase() == identifier) {
                 return role;
             }
         }
@@ -33,7 +33,7 @@ utils.getChannel = identifier => {
     }
     for (let guild of client.guilds.values()) {
         for (let channel of guild.channels.values()) {
-            if (channel.id === identifier || channel.name === identifier) {
+            if (channel.id == identifier || channel.name == identifier) {
                 return channel;
             }
         }
@@ -48,7 +48,7 @@ utils.getUser = (guild, identifier) => {
         }
     }
     for (let member of guild.members.values()) {
-        if (member.id === identifier || member.user.username.replace(/\s+/g, '_').toLowerCase() === identifier) {
+        if (member.id == identifier || member.user.username.replace(/\s+/g, '_').toLowerCase() == identifier) {
             return member;
         }
     }
