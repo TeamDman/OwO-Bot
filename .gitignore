@@ -3,3 +3,4 @@
 /config/token.json
 token.json
 logs.txt
+.env
