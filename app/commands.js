@@ -90,7 +90,7 @@ addCommand(true, {name: 'task'}, async (message, args) => {
 
 addCommand(true, {name: 'echo'}, async (message, args) => {
     message.channel.send(args.join(' '));
-    await message.delete();
+    message.delete().catch(e => console.error(e));
 });
 
 addCommand(false, {name: 'avatar'}, async (message, args) => {
