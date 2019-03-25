@@ -112,7 +112,7 @@ addCommand(false, {name: 'debug'}, async( message, args) => {
 
 addCommand(false, {name: 'issue'}, async (message, args) => {
     const getBody = message => {
-        return `${args.join(' ')}\n\nSubmitter: \`${message.author.tag}\`\nBody: \`${message.content}\`\nAttachments:\n${message.attachments.map(m => `![attachment](${m.url})`).join('\n')}`;
+        return `${args[0].indexOf(' ')==-1?'':args.slice(1)}\n\nSubmitter: \`${message.author.tag}\`\nBody: \`${message.content}\`\nAttachments:\n${message.attachments.map(m => `![attachment](${m.url})`).join('\n')}`;
     }
     if (args.length === 0)
         return message.channel.send("Issue can't be blank.");
