@@ -115,7 +115,7 @@ addCommand(false, {name: 'issue'}, async (message, args) => {
         return `${args.join(' ')}\n\nSubmitter: \`${message.author.tag}\`\nBody: \`${message.content}\`\nAttachments:\n${message.attachments.map(m => `![attachment](${m.url})`).join('\n')}`;
     }
 
-    createIssue('Vyraal1/FTB-Interactions', args.shift(), {
+    createIssue('FTBTeam/FTB-Interactions/issues', args.shift(), {
         'token':process.env.GITHUB_TOKEN,
         'labels':['auto'],
         'body':getBody(message)
