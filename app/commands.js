@@ -114,8 +114,10 @@ addCommand(false, {name: 'issue'}, async (message, args) => {
     const getBody = message => {
         return `${args.join(' ')}\n\nSubmitter: \`${message.author.tag}\`\nBody: \`${message.content}\`\nAttachments:\n${message.attachments.map(m => `![attachment](${m.url})`).join('\n')}`;
     }
+    if (args.length === 0)
+        return message.channel.send("Issue can't be blank.");
 
-    createIssue('FTBTeam/FTB-Interactions', args.shift(), {
+    createIssue('FTBTeam/FTB-Interactions', args[0].indexOf(' ')==-1?args.join(' '):args[0], {
         'token':process.env.GITHUB_TOKEN,
         'labels':['auto'],
         'body':getBody(message)
