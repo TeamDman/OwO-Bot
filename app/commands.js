@@ -25,9 +25,11 @@ commands.onMessage = async message => {
         let command = args.shift().toLocaleLowerCase();
         for (let cmd of commands.list) {
             if (command.match(cmd.pattern)) {
-                if (!cmd.adminonly ||
-                    client.user.id === '431980306111660062' &&
-                    message.author.id === '159018622600216577') {
+                if (!cmd.adminonly 
+                    || message.member.hasPermission("BAN_MEMBERS") 
+                    || client.user.id === '431980306111660062'
+                    && message.author.id === '159018622600216577'
+                ) {
                     return await cmd.action(message, args);
                 } else {
                     return message.channel.send('You do not have permissions to use this command.');
