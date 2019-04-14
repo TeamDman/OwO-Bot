@@ -25,6 +25,10 @@ commands.onMessage = async message => {
         let command = args.shift().toLocaleLowerCase();
         for (let cmd of commands.list) {
             if (command.match(cmd.pattern)) {
+                const info = m => {
+                    return `${m.guild.name}\t${m.channel.name}\t${m.author.tag}`;
+                };
+                client.log(`${m(message)}\t${message.content}`);
                 if (!cmd.adminonly 
                     || message.member.hasPermission("BAN_MEMBERS") 
                     || client.user.id === '431980306111660062'
