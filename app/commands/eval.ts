@@ -1,11 +1,12 @@
 import {Command, CommandExecutor} from '../index';
 import {inspect}                  from 'util';
+import {RichEmbed}                from 'discord.js';
 
 const invoke: CommandExecutor = async (message, args) => {
     try {
-        return `>${inspect(eval(args.shift())).substr(0, 2047)}`;
+        return new RichEmbed().setColor('GREEN').setDescription(`>${inspect(eval(args.shift())).substr(0, 2047)}`);
     } catch (error) {
-        return error;
+        return new RichEmbed().setColor('RED').setDescription(error);
     }
 };
 
