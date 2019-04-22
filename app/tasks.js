@@ -11,6 +11,8 @@ function init(client) {
         if (err)
             return logger.error(err);
         files.forEach(file => {
+            if (!file.endsWith('.js'))
+                return;
             require(`./autotasks/${file}`)(client);
         });
     });

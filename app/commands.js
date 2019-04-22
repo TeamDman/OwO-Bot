@@ -26,13 +26,18 @@ function init() {
 }
 exports.init = init;
 function hasPermission(member, perm) {
+    if (member.id === config_1.default['bot owner id'] && member.client.user.id === config_1.default['test bot id'])
+        return true;
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
             return member.id === config_1.default['bot owner id'];
         if (member.hasPermission(perm))
             return true;
+        return false;
     }
-    return perm.roles.some(r => member.roles.has(r));
+    else {
+        return perm.roles.some(r => member.roles.has(r));
+    }
 }
 exports.hasPermission = hasPermission;
 function isSimple(c) {
