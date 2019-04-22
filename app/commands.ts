@@ -18,8 +18,14 @@ export function init() {
     });
 }
 
-export function hasPermission(member: GuildMember, level: Permission): boolean {
-    return true;
+export function hasPermission(member: GuildMember, perm: Permission): boolean {
+    if (typeof perm === 'string') {
+        if (perm === 'MANAGE_BOT')
+            return member.id === config['bot owner id'];
+        if (member.hasPermission(perm))
+            return true;
+    }
+    return (perm as {roles:[string]}).roles.some(r => member.roles.has(r));
 }
 
 export function isSimple(c: Command): c is SimpleCommand {
@@ -37,7 +43,7 @@ export function isRouted(c: Command): c is RoutedCommand {
 
 export async function attemptCommand(message: Message, command: Command, content: string): Promise<string | RichEmbed> {
     logger.info(`${message.guild.name}\t${message.channel}\t${message.author.tag}\t${message.content}`);
-    if ((command.permissions||[]).some(perm => !hasPermission(message.member, perm)))
+    if ((command.permissions || []).some(perm => !hasPermission(message.member, perm)))
         return 'You do not have permissions to use this command.';
     let args = content.match(/\\?.|^$/g).reduce((p: any, c: any) => {
         if (c === '"') {
@@ -70,7 +76,6 @@ export async function attemptCommand(message: Message, command: Command, content
     for (let i = 0; i < params.length; i++) {
         let param = params[i];
         if (param.type === 'STRING') {
-            continue;
         } else if (param.type === 'USER') {
             let user = utils.getMember(message, args[i]);
             if (user === null)
@@ -99,7 +104,7 @@ export async function attemptCommand(message: Message, command: Command, content
     if (route !== undefined) {
         args = [message, route, args];
     } else {
-        args = [message, args]
+        args = [message, args];
     }
 
     return await command.executor.apply(null, args);
