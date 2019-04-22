@@ -1,0 +1,12 @@
+{
+  "prefix": "OwO",
+  "log file": "logs.txt",
+  "presence": "nothing",
+  "presence type": 0,
+  "bot owner id": "159018622600216577",
+  "test bot id": "431980306111660062",
+  "bot guild:[channel] whitelists": {
+    "381386573830160396": {"452530315630477333": 1}
+  }
+
+}
