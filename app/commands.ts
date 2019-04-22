@@ -81,6 +81,19 @@ export async function attemptCommand(message: Message, command: Command, content
             if (role === null)
                 return `Role ${args[i]} was not found.`;
             args[i] = role;
+        } else if (param.type === 'CHANNEL') {
+            let ch = utils.getChannel(message, args[i]);
+            if (ch === null)
+                return `Channel ${args[i]} was not found.`;
+            args[i] = ch;
+        } else if (param.type === 'INTEGER') {
+            if (isNaN(args[i]))
+                return `Argument ${args[i]} is not a number.`;
+            args[i] = parseInt(args[i]);
+        } else if (param.type === 'DECIMAL') {
+            if (isNaN(args[i]))
+                return `Argument ${args[i]} is not a number.`;
+            args[i] = parseFloat(args[i]);
         }
     }
     if (route !== undefined) {

@@ -17,19 +17,19 @@ export function getRole(context: Message, identifier: any): Role {
     return null;
 }
 
-export function getChannel(context: Client, identifier: any): Channel {
+export function getChannel(context: Message, identifier: any): Channel {
     if (typeof identifier === 'string') {
         if (identifier.match(/\d+/g)) {
             identifier = identifier.match(/\d+/g);
         }
     }
-    for (let guild of context.guilds.values()) {
-        for (let channel of guild.channels.values()) {
+    // for (let guild of context.guilds.values()) {
+        for (let channel of context.guild.channels.values()) {
             if (channel.id == identifier || channel.name == identifier) {
                 return channel;
             }
         }
-    }
+    // }
     return null;
 }
 

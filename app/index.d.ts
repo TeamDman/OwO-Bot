@@ -6,11 +6,8 @@ export type ParameterType =
     | 'ROLE'
     | 'CHANNEL'
     | 'GUILD'
-    | 'TIME'
-    | 'DURATION'
     | 'INTEGER'
     | 'DECIMAL'
-    | 'COLOUR'
 
 export type Permission = PermissionString | 'MANAGE_BOT'
 
