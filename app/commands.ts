@@ -37,7 +37,7 @@ export function isRouted(c: Command): c is RoutedCommand {
 
 export async function attemptCommand(message: Message, command: Command, content: string): Promise<string | RichEmbed> {
     logger.info(`${message.guild.name}\t${message.channel}\t${message.author.tag}\t${message.content}`);
-    if (command.permissions.some(perm => !hasPermission(message.member, perm)))
+    if ((command.permissions||[]).some(perm => !hasPermission(message.member, perm)))
         return 'You do not have permissions to use this command.';
     let args = content.match(/\\?.|^$/g).reduce((p: any, c: any) => {
         if (c === '"') {
@@ -94,7 +94,7 @@ export async function attemptCommand(message: Message, command: Command, content
 
 export async function onMessage(message: Message) {
     try {
-        // if (message.author.bot) return;
+        if (message.author.bot) return;
         if (message.guild.id in config['bot guild:[channel] whitelists'] && !(message.channel.id in config['bot guild:[channel] whitelists'][message.guild.id])) return;
         if (message.content.match(config.prefix) === null) return;
 
@@ -103,13 +103,12 @@ export async function onMessage(message: Message) {
         for (let command of commands) {
             if (command.commands.some(c => cmd.match(c) !== null)) {
                 let result = await attemptCommand(message, command, tokens.join(' '));
-                if (result !== null && !(typeof result === 'string' && result.length === 0))
+                if (result !== null && result !== undefined && !(typeof result === 'string' && result.length === 0))
                     return await message.channel.send(result);
                 else
                     return;
             }
         }
-        // message.channel.send(`No command found matching '${command}'`);
     } catch (e) {
         logger.error(`Error during message handler\n${e}`);
     }
