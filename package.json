@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "build": "node node_modules/typescript/bin/tsc app/app.ts --downlevelIteration",
-    "start": "node node_modules/forever/bin/forever dist/app.js",
+    "start": "node dist/app.js",
+    "forever": "node node_modules/forever/bin/forever dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
