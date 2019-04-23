@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "build": "node node_modules/typescript/bin/tsc app/app.ts --downlevelIteration",
+    "run": "node node_modules/forever/bin/forever dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "^11.13.6",
+    "forever": "^1.0.0",
     "typescript": "^3.4.4"
   }
 }
