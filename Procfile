@@ -1,1 +1,1 @@
-discord-bot: npm run start
+discord-bot: node dist/app.js
