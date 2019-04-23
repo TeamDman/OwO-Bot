@@ -1,1 +1,1 @@
-discord-bot: pwd && ls
+discord-bot: node dist/app.js
