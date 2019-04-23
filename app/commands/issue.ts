@@ -1,5 +1,5 @@
 import {Command, CommandExecutor} from '../index';
-import createIssue                from 'github-create-issue';
+const createIssue = require('github-create-issue');
 
 const invoke: CommandExecutor = async (message, args) => {
     return new Promise<string>(resolve => {
@@ -17,6 +17,7 @@ export default {
     name:        'Issue',
     commands:    ['issue'],
     description: 'Creates issues on the FTB:Interactions Github tracker',
+    permissions: [{roles: ['569940380343074826']}],
     parameters:  [{
         name: 'Title',
         type: 'STRING'

@@ -8,10 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const github_create_issue_1 = require("github-create-issue");
+const createIssue = require('github-create-issue');
 const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
     return new Promise(resolve => {
-        github_create_issue_1.default('FTBTeam/FTB-Interactions', args.shift(), {
+        createIssue('FTBTeam/FTB-Interactions', args.shift(), {
             'token': process.env.GITHUB_TOKEN,
             'labels': ['auto'],
             'body': `${args.shift()}\n\nSubmitter: \`${message.author.tag}\`\nBody: \`${message.content}\`\nAttachments:\n${message.attachments.map(m => `![attachment](${m.url})`).join('\n')}`
@@ -24,6 +24,7 @@ exports.default = {
     name: 'Issue',
     commands: ['issue'],
     description: 'Creates issues on the FTB:Interactions Github tracker',
+    permissions: [{ roles: ['569940380343074826'] }],
     parameters: [{
             name: 'Title',
             type: 'STRING'
