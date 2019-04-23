@@ -9,7 +9,7 @@ const commands: Command[] = [];
 export default commands;
 
 export function init() {
-    require('fs').readdir('./app/commands/', (err, files) => {
+    require('fs').readdir(__dirname+'/commands/', (err, files) => {
         if (err) return logger.error(err);
         files.forEach(file => {
             if (!file.endsWith('.js')) return;
