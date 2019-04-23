@@ -7,6 +7,9 @@
   "test bot id": "431980306111660062",
   "bot guild:[channel] whitelists": {
     "381386573830160396": {"452530315630477333": 1}
-  }
-
+  },
+  "trusted github issue creator roles": [
+    "569940380343074826","ftb",
+    "569940380343074826","breakinblocks"
+  ]
 }
