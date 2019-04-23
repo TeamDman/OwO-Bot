@@ -19,13 +19,17 @@ export function init() {
 }
 
 export function hasPermission(member: GuildMember, perm: Permission): boolean {
+    if (member.id === config['bot owner id'] && member.client.user.id === config['test bot id'])
+        return true;
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
             return member.id === config['bot owner id'];
         if (member.hasPermission(perm))
             return true;
+        return false;
+    } else {
+        return (perm as {roles:[string]}).roles.some(r => member.roles.has(r));
     }
-    return (perm as {roles:[string]}).roles.some(r => member.roles.has(r));
 }
 
 export function isSimple(c: Command): c is SimpleCommand {

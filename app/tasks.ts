@@ -10,6 +10,7 @@ export function init(client: Client) {
     require('fs').readdir('app/autotasks/', (err, files) => {
         if (err) return logger.error(err);
         files.forEach(file => {
+            if (!file.endsWith('.js')) return;
             require(`./autotasks/${file}`)(client);
         });
     });
