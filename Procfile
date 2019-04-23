@@ -1,1 +1,1 @@
-discord-bot: npm run build && npm run run
+discord-bot: npm run start
