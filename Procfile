@@ -1,1 +1,1 @@
-discord-bot: node app/app
+discord-bot: npm run build && npm run run
