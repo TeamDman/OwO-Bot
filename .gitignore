@@ -1,6 +1,6 @@
 /.idea/
 /node_modules/
-/config/token.json
 token.json
+/dist/
 logs.txt
 .env
