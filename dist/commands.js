@@ -26,11 +26,11 @@ function init() {
 }
 exports.init = init;
 function hasPermission(member, perm) {
-    if (member.id === config_1.default['bot owner id'] && member.client.user.id === config_1.default['test bot id'])
+    if (member.id in config_1.default['dev bot ids'] && member.client.user.id in config_1.default['bot manager ids'])
         return true;
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
-            return member.id === config_1.default['bot owner id'];
+            return member.id in config_1.default['bot manager ids'];
         if (member.hasPermission(perm))
             return true;
         return false;
@@ -87,7 +87,7 @@ function attemptCommand(message, command, content) {
             return `You do not have permission to use this command.`;
         if (args.length < params.length)
             return `Only ${args.length} arguments found, expected ${params.length}`;
-        args = [...args.slice(0, params.length - 2), args.slice(params.length - 1).join(' ')];
+        args = [...args.slice(0, params.length - 1), args.slice(params.length - 1).join(' ')];
         for (let i = 0; i < params.length; i++) {
             let param = params[i];
             if (param.type === 'STRING') {

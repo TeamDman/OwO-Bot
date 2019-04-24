@@ -19,11 +19,11 @@ export function init() {
 }
 
 export function hasPermission(member: GuildMember, perm: Permission): boolean {
-    if (member.id === config['bot owner id'] && member.client.user.id === config['test bot id'])
+    if (member.id in config['dev bot ids'] && member.client.user.id in config['bot manager ids'])
         return true;
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
-            return member.id === config['bot owner id'];
+            return member.id in config['bot manager ids'];
         if (member.hasPermission(perm))
             return true;
         return false;
