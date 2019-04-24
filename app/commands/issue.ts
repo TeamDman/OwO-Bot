@@ -22,6 +22,9 @@ export default {
     parameters:  [{
         name: 'Title',
         type: 'STRING'
+    },{
+        name: 'Body',
+        type: 'STRING'
     }],
     executor:    invoke
 } as Command;
