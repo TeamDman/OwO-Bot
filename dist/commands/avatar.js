@@ -19,6 +19,7 @@ const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
 exports.default = {
     name: 'avatar',
     commands: ['avatar', 'pfp'],
+    description: 'Displays the URL of the avatar for a user.',
     parameters: [{
             type: 'USER'
         }],

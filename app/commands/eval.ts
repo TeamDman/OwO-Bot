@@ -13,10 +13,10 @@ const invoke: CommandExecutor = async (message, args) => {
 export default {
     name:       'Evaluate',
     commands:   ['eval', 'exec'],
+    description: 'Evaluates a given javascript statement',
     parameters: [{
         name:     'Code',
-        type:     'STRING',
-        examples: ['2+2', 'message.author']
+        type:     'STRING'
     }],
     executor:   invoke
 } as Command;

@@ -21,10 +21,10 @@ const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
 exports.default = {
     name: 'Evaluate',
     commands: ['eval', 'exec'],
+    description: 'Evaluates a given javascript statement',
     parameters: [{
             name: 'Code',
-            type: 'STRING',
-            examples: ['2+2', 'message.author']
+            type: 'STRING'
         }],
     executor: invoke
 };

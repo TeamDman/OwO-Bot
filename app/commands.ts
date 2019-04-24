@@ -6,7 +6,9 @@ import config                                                                   
 
 const commands: Command[] = [];
 
-export default commands;
+export function getCommands():Command[] {
+    return commands;
+}
 
 export function init() {
     require('fs').readdir(__dirname + '/commands/', (err, files) => {
@@ -68,7 +70,7 @@ export async function attemptCommand(message: Message, command: Command, content
         route = args.shift().trim().toLowerCase();
         if (!(route in command.routes))
             return `Unknown route ${route} for command ${command.name}`;
-        params = command.routes[route];
+        params = command.routes[route].parameters || [];
     } else if (isParameterized(command)) {
         params = command.parameters;
     }

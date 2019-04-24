@@ -4,11 +4,11 @@ import {CommandResult, Task} from './index';
 
 const taskList: Task[] = [];
 
-export function getTasks() {
+export function getTasks(): Task[] {
     return taskList;
 }
 
-export function refreshTasks() {
+export function refreshTasks(): void {
     taskList.length = 0;
     let files    = require('fs').readdirSync(__dirname + '/tasks/');
     for (let file of files) {
@@ -18,7 +18,7 @@ export function refreshTasks() {
     }
 }
 
-export function init(client: Client) {
+export function init(client: Client): void {
     refreshTasks();
     taskList.filter(t => t.autoStart).forEach(task => {
         try {

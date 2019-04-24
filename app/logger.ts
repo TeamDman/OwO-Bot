@@ -5,19 +5,19 @@ import {DMChannel, GuildChannel, Message} from 'discord.js';
 
 const stream = createWriteStream(config['log file'], {flags: 'a'});
 
-export function augment(text: string) {
+export function augment(text: string): string {
     return `[${new Date().toLocaleString('en-ca')}] ${text}\n`;
 
 }
 
-export function info(text: string) {
+export function info(text: string): void {
     if (text === null) return;
     let s = augment(`[INFO] ${text}`);
     process.stdout.write(s);
     stream.write(s);
 }
 
-export function error(text: string) {
+export function error(text: string): void {
     if (text === null) return;
     let s = augment(`[ERROR] ${text}`);
     process.stderr.write(s);
