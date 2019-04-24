@@ -33,4 +33,14 @@ function strip(v) {
     return null;
 }
 exports.strip = strip;
+function formatMessageToString(message) {
+    return `${message.channel.type == 'text' && message.guild.name
+        || message.channel.type == 'dm' && 'Direct Messages'
+        || 'Unknown Guild'}`
+        + `\t#${message.channel.type == 'text' && message.channel.name
+            || message.channel.type == 'dm' && message.channel.recipient.tag}`
+        + `\t<@${message.author.id}> (${message.author.tag})`
+        + `\t${message.content}`;
+}
+exports.formatMessageToString = formatMessageToString;
 //# sourceMappingURL=logger.js.map
