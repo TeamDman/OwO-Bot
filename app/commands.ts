@@ -9,7 +9,7 @@ const commands: Command[] = [];
 export default commands;
 
 export function init() {
-    require('fs').readdir(__dirname+'/commands/', (err, files) => {
+    require('fs').readdir(__dirname + '/commands/', (err, files) => {
         if (err) return logger.error(err);
         files.forEach(file => {
             if (!file.endsWith('.js')) return;
@@ -19,7 +19,7 @@ export function init() {
 }
 
 export function hasPermission(member: GuildMember, perm: Permission): boolean {
-    if (member.id in config['dev bot ids'] && member.client.user.id in config['bot manager ids'])
+    if (member.id in config['bot manager ids'] && member.client.user.id in config['dev bot ids'])
         return true;
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
@@ -27,7 +27,7 @@ export function hasPermission(member: GuildMember, perm: Permission): boolean {
         return member.hasPermission(perm);
 
     } else {
-        return (perm as {roles:[string]}).roles.some(r => member.roles.has(r));
+        return (perm as { roles: [string] }).roles.some(r => member.roles.has(r));
     }
 }
 
@@ -45,7 +45,9 @@ export function isRouted(c: Command): c is RoutedCommand {
 
 
 export async function attemptCommand(message: Message, command: Command, content: string): Promise<string | RichEmbed> {
-    logger.info(`${message.guild.name}\t${message.channel}\t${message.author.tag}\t${message.content}`);
+    logger.info(logger.formatMessageToString(message));
+    if (message.channel.type !== 'text')
+        return `Commands can not be used outside of guilds.`;
     if ((command.permissions || []).some(perm => !hasPermission(message.member, perm)))
         return 'You do not have permissions to use this command.';
     let args = content.match(/\\?.|^$/g).reduce((p: any, c: any) => {
@@ -116,8 +118,10 @@ export async function attemptCommand(message: Message, command: Command, content
 export async function onMessage(message: Message) {
     try {
         if (message.author.bot) return;
-        if (message.guild.id in config['bot guild:[channel] whitelists'] && !(message.channel.id in config['bot guild:[channel] whitelists'][message.guild.id])) return;
+        if (message.channel.type === 'text' && message.guild.id in config['bot guild:[channel] whitelists'] && !(message.channel.id in config['bot guild:[channel] whitelists'][message.guild.id])) return;
+        if (message.channel.type !== 'text') logger.info(logger.formatMessageToString(message));
         if (message.content.match(config.prefix) === null) return;
+        if (message.channel.type !== 'text') return await message.channel.send('Commands can not be used outside of guilds.');
 
         let tokens = message.content.substr(message.content.match(config.prefix).index + config.prefix.length + 1).split(' ');
         let cmd    = tokens.shift().trim();

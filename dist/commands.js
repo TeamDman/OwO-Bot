@@ -26,7 +26,7 @@ function init() {
 }
 exports.init = init;
 function hasPermission(member, perm) {
-    if (member.id in config_1.default['dev bot ids'] && member.client.user.id in config_1.default['bot manager ids'])
+    if (member.id in config_1.default['bot manager ids'] && member.client.user.id in config_1.default['dev bot ids'])
         return true;
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
@@ -52,7 +52,9 @@ function isRouted(c) {
 exports.isRouted = isRouted;
 function attemptCommand(message, command, content) {
     return __awaiter(this, void 0, void 0, function* () {
-        logger.info(`${message.guild.name}\t${message.channel}\t${message.author.tag}\t${message.content}`);
+        logger.info(logger.formatMessageToString(message));
+        if (message.channel.type !== 'text')
+            return `Commands can not be used outside of guilds.`;
         if ((command.permissions || []).some(perm => !hasPermission(message.member, perm)))
             return 'You do not have permissions to use this command.';
         let args = content.match(/\\?.|^$/g).reduce((p, c) => {
@@ -134,10 +136,14 @@ function onMessage(message) {
         try {
             if (message.author.bot)
                 return;
-            if (message.guild.id in config_1.default['bot guild:[channel] whitelists'] && !(message.channel.id in config_1.default['bot guild:[channel] whitelists'][message.guild.id]))
+            if (message.channel.type === 'text' && message.guild.id in config_1.default['bot guild:[channel] whitelists'] && !(message.channel.id in config_1.default['bot guild:[channel] whitelists'][message.guild.id]))
                 return;
+            if (message.channel.type !== 'text')
+                logger.info(logger.formatMessageToString(message));
             if (message.content.match(config_1.default.prefix) === null)
                 return;
+            if (message.channel.type !== 'text')
+                return yield message.channel.send('Commands can not be used outside of guilds.');
             let tokens = message.content.substr(message.content.match(config_1.default.prefix).index + config_1.default.prefix.length + 1).split(' ');
             let cmd = tokens.shift().trim();
             for (let command of commands) {
