@@ -8,15 +8,29 @@ function augment(text) {
 }
 exports.augment = augment;
 function info(text) {
+    if (text === null)
+        return;
     let s = augment(`[INFO] ${text}`);
     process.stdout.write(s);
     stream.write(s);
 }
 exports.info = info;
 function error(text) {
+    if (text === null)
+        return;
     let s = augment(`[ERROR] ${text}`);
     process.stderr.write(s);
     stream.write(s);
 }
 exports.error = error;
+function strip(v) {
+    if (v === null || v === undefined)
+        return null;
+    if (typeof v === 'string')
+        return v;
+    if (typeof v === 'object' && 'description' in v)
+        return v.description;
+    return null;
+}
+exports.strip = strip;
 //# sourceMappingURL=logger.js.map

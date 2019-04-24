@@ -8,21 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const tasks_1 = require("../tasks");
+const tasks = require("../tasks");
 const discord_js_1 = require("discord.js");
 const invoke = ((message, route, args) => __awaiter(this, void 0, void 0, function* () {
-    try {
-        tasks_1.runTask(message.client, args.shift());
-    }
-    catch (error) {
-        yield message.channel.send(new discord_js_1.RichEmbed().setDescription(error));
+    switch (route) {
+        case 'list':
+            return new discord_js_1.RichEmbed().setTitle('Tasks').setDescription(tasks.getTasks().map(t => `${t.name}: ${t.description}`).join('\n'));
+        case 'start':
+            return tasks.startTask(message.client, args.shift());
+        case 'stop':
+            return tasks.stopTask(message.client, args.shift());
     }
 }));
 exports.default = {
     name: 'Tasks',
     commands: ['tasks', 'task'],
     routes: {
-        'run': [{
+        'list': [{
+                name: 'Task Name',
+                type: 'STRING'
+            }],
+        'start': [{
+                name: 'Task Name',
+                type: 'STRING'
+            }],
+        'stop': [{
                 name: 'Task Name',
                 type: 'STRING'
             }]

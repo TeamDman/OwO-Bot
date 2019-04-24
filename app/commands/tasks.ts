@@ -1,13 +1,15 @@
 import {Command, CommandExecutor} from '../index';
-import {runTask}                  from '../tasks';
+import * as tasks                 from '../tasks';
 import {RichEmbed}                from 'discord.js';
 
-
 const invoke: CommandExecutor = (async (message, route, args) => {
-    try {
-        runTask(message.client, args.shift());
-    } catch (error) {
-        await message.channel.send(new RichEmbed().setDescription(error));
+    switch (route) {
+        case 'list':
+            return new RichEmbed().setTitle('Tasks').setDescription(tasks.getTasks().map(t => `${t.name}: ${t.description}`).join('\n'));
+        case 'start':
+            return tasks.startTask(message.client, args.shift());
+        case 'stop':
+            return tasks.stopTask(message.client, args.shift());
     }
 });
 
@@ -15,7 +17,15 @@ export default {
     name:     'Tasks',
     commands: ['tasks', 'task'],
     routes:   {
-        'run': [{
+        'list':  [{
+            name: 'Task Name',
+            type: 'STRING'
+        }],
+        'start': [{
+            name: 'Task Name',
+            type: 'STRING'
+        }],
+        'stop':  [{
             name: 'Task Name',
             type: 'STRING'
         }]
