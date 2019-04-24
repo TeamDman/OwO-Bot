@@ -24,9 +24,8 @@ export function hasPermission(member: GuildMember, perm: Permission): boolean {
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
             return member.id in config['bot manager ids'];
-        if (member.hasPermission(perm))
-            return true;
-        return false;
+        return member.hasPermission(perm);
+
     } else {
         return (perm as {roles:[string]}).roles.some(r => member.roles.has(r));
     }

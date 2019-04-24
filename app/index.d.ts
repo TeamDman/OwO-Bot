@@ -1,4 +1,4 @@
-import {Message, PermissionString, RichEmbed} from 'discord.js';
+import {Client, Message, PermissionString, RichEmbed} from 'discord.js';
 
 export type ParameterType =
     | 'STRING'
@@ -49,9 +49,11 @@ export type ParameterizedCommandExecutor = (message: Message, args: any[]) => Pr
 export type Command = SimpleCommand | RoutedCommand | ParameterizedCommand
 export type CommandExecutor = RoutedCommandExecutor | ParameterizedCommandExecutor
 
-
 export interface Task {
     name: string,
     description: string,
-
+    allowConcurrent: boolean,
+    autoStart: boolean,
+    start: (client:Client) => CommandResult,
+    stop?: (client:Client) => CommandResult
 }

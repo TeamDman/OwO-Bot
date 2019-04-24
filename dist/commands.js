@@ -31,9 +31,7 @@ function hasPermission(member, perm) {
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
             return member.id in config_1.default['bot manager ids'];
-        if (member.hasPermission(perm))
-            return true;
-        return false;
+        return member.hasPermission(perm);
     }
     else {
         return perm.roles.some(r => member.roles.has(r));
