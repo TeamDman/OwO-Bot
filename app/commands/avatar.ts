@@ -12,6 +12,7 @@ const invoke: CommandExecutor = async (message, args) => {
 export default {
     name:       'avatar',
     commands:   ['avatar', 'pfp'],
+    description: 'Displays the URL of the avatar for a user.',
     parameters: [{
         type: 'USER'
     }],

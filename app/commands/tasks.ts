@@ -16,19 +16,28 @@ const invoke: CommandExecutor = (async (message, route, args) => {
 export default {
     name:     'Tasks',
     commands: ['tasks', 'task'],
+    description: 'Manages available tasks.',
     routes:   {
-        'list':  [{
-            name: 'Task Name',
-            type: 'STRING'
-        }],
-        'start': [{
-            name: 'Task Name',
-            type: 'STRING'
-        }],
-        'stop':  [{
-            name: 'Task Name',
-            type: 'STRING'
-        }]
+        'list':  {
+            name: 'List Tasks',
+            description: 'Lists available tasks.',
+        },
+        'start': {
+            name: 'Start Task',
+            description: 'Starts a task by name.',
+            parameters: [{
+                name: 'Task Name',
+                type: 'STRING'
+            }]
+        },
+        'stop': {
+            name: 'Stop Task',
+            description: 'Stops a task by name.',
+            parameters: [{
+                name: 'Task Name',
+                type: 'STRING'
+            }]
+        }
     },
     executor: invoke
 } as Command;

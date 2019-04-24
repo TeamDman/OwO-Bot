@@ -12,7 +12,10 @@ const logger = require("./logger");
 const utils = require("./utils");
 const config_1 = require("./config");
 const commands = [];
-exports.default = commands;
+function getCommands() {
+    return commands;
+}
+exports.getCommands = getCommands;
 function init() {
     require('fs').readdir(__dirname + '/commands/', (err, files) => {
         if (err)
@@ -78,7 +81,7 @@ function attemptCommand(message, command, content) {
             route = args.shift().trim().toLowerCase();
             if (!(route in command.routes))
                 return `Unknown route ${route} for command ${command.name}`;
-            params = command.routes[route];
+            params = command.routes[route].parameters || [];
         }
         else if (isParameterized(command)) {
             params = command.parameters;

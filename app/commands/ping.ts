@@ -16,12 +16,21 @@ const invoke: CommandExecutor = async (message, route, args) => {
 export default {
     name:       'ping',
     commands:   ['ping'],
+    description: 'Makes the bot print to the chat.',
     routes: {
-        "":   [],
-        "me": [{
-            name: 'Delay (seconds)',
-            type: 'INTEGER'
-        }]
+        "":   {
+            name: 'Latency',
+            description: 'Prints the bot latency to the chat.',
+        },
+        "me": {
+            name: 'Self Ping',
+            description: 'Makes the bot mention you.',
+            parameters: [{
+                name: 'Delay',
+                type: 'INTEGER',
+                description: 'Time, in seconds.'
+            }]
+        }
     },
     executor:   invoke
 } as Command;

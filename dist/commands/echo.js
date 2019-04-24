@@ -13,11 +13,11 @@ const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
 exports.default = {
     name: 'Echo',
     commands: ['echo', 'say'],
+    description: 'Prints a given line to the chat.',
     permissions: ['MANAGE_MESSAGES'],
     parameters: [{
             name: 'Message',
-            type: 'STRING',
-            examples: ['Hello world!']
+            type: 'STRING'
         }],
     executor: invoke
 };
