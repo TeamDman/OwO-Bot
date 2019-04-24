@@ -20,7 +20,7 @@ function refreshTasks() {
     let files = require('fs').readdirSync(__dirname + '/tasks/');
     for (let file of files) {
         if (!file.endsWith('.js'))
-            return;
+            continue;
         delete require.cache[require.resolve(`./tasks/${file}`)];
         taskList.push(require(`./tasks/${file}`).default);
     }
