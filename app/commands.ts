@@ -78,6 +78,7 @@ export async function attemptCommand(message: Message, command: Command, content
     if (args.length < params.length)
         return `Only ${args.length} arguments found, expected ${params.length}`;
     args = [...args.slice(0, params.length - 1), args.slice(params.length - 1).join(' ')];
+    args = args.map(arg => arg.trim());
     for (let i = 0; i < params.length; i++) {
         let param = params[i];
         if (param.type === 'STRING') {
