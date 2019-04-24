@@ -16,7 +16,12 @@ export interface Parameter {
     description?: string,
     type: ParameterType,
     permissions?: Permission[],
-    examples?: string[]
+}
+
+export interface Route {
+    name?: string,
+    description?: string,
+    parameters?: Parameter[]
 }
 
 
@@ -32,7 +37,7 @@ export interface SimpleCommand extends CommandBase {
 }
 
 export interface RoutedCommand extends CommandBase {
-    routes: { [index: string]: Parameter[] },
+    routes: { [index: string]: Route },
     executor: RoutedCommandExecutor
 }
 

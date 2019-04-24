@@ -23,12 +23,21 @@ const invoke = (message, route, args) => __awaiter(this, void 0, void 0, functio
 exports.default = {
     name: 'ping',
     commands: ['ping'],
+    description: 'Makes the bot print to the chat.',
     routes: {
-        "": [],
-        "me": [{
-                name: 'Delay (seconds)',
-                type: 'INTEGER'
-            }]
+        "": {
+            name: 'Latency',
+            description: 'Prints the bot latency to the chat.',
+        },
+        "me": {
+            name: 'Self Ping',
+            description: 'Makes the bot mention you.',
+            parameters: [{
+                    name: 'Delay',
+                    type: 'INTEGER',
+                    description: 'Time, in seconds.'
+                }]
+        }
     },
     executor: invoke
 };
