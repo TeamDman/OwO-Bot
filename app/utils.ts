@@ -1,49 +1,36 @@
-import {Channel, Client, Guild, GuildMember, Message, Role, User} from 'discord.js';
-import * as logger from './logger';
+import {Channel, GuildMember, Message, Role} from 'discord.js';
+import * as logger                           from './logger';
 
-export function getRole(context: Message, identifier: any): Role {
-    if (typeof identifier === 'string') {
-        if ((identifier = identifier.replace(/\s+/g, '_').toLowerCase()).match(/\d+/g)) {
-            identifier = identifier.match(/\d+/g);
-        }
-    }
-    // for (let guild of context.guilds.values()) {
-        for (let role of context.guild.roles.values()) {
-            if (role.id == identifier || role.name.replace(/\s+/g, '_').toLowerCase() == identifier) {
-                return role;
-            }
-        }
-    // }
+export function getRole(context: Message, identifier: string): Role {
+    for (let role of context.guild.roles.values())
+        if (role.id == identifier)
+            return role;
+    for (let role of context.guild.roles.values())
+        if (role.name.toLowerCase() == identifier.toLowerCase())
+            return role;
     return null;
 }
 
-export function getChannel(context: Message, identifier: any): Channel {
-    if (typeof identifier === 'string') {
-        if (identifier.match(/\d+/g)) {
-            identifier = identifier.match(/\d+/g);
-        }
-    }
-    // for (let guild of context.guilds.values()) {
-        for (let channel of context.guild.channels.values()) {
-            if (channel.id == identifier || channel.name == identifier) {
-                return channel;
-            }
-        }
-    // }
+export function getChannel(context: Message, identifier: string): Channel {
+    for (let channel of context.guild.channels.values())
+        if (channel.id == identifier)
+            return channel;
+    for (let channel of context.guild.channels.values())
+        if (channel.name.toLowerCase() == identifier.toLowerCase())
+            return channel;
     return null;
 }
 
-export function getMember(context: Message, identifier: any): GuildMember {
-    if (typeof identifier === 'string') {
-        if ((identifier = identifier.replace(/\s+/g, '_').toLowerCase()).match(/\d+/g)) {
-            identifier = identifier.match(/\d+/g);
-        }
-    }
-    for (let member of context.guild.members.values()) {
-        if (member.id == identifier || member.user.username.replace(/\s+/g, '_').toLowerCase() == identifier) {
+export function getMember(context: Message, identifier: string): GuildMember {
+    for (let member of context.guild.members.values())
+        if (member.id === identifier)
             return member;
-        }
-    }
+    for (let member of context.guild.members.values())
+        if (member.user.username.toLowerCase() == identifier.toLowerCase())
+            return member;
+    for (let member of context.guild.members.values())
+        if (member.nickname && member.nickname.toLowerCase() == identifier.toLowerCase())
+            return member;
     return null;
 }
 

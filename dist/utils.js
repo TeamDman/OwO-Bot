@@ -10,48 +10,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger = require("./logger");
 function getRole(context, identifier) {
-    if (typeof identifier === 'string') {
-        if ((identifier = identifier.replace(/\s+/g, '_').toLowerCase()).match(/\d+/g)) {
-            identifier = identifier.match(/\d+/g);
-        }
-    }
-    // for (let guild of context.guilds.values()) {
-    for (let role of context.guild.roles.values()) {
-        if (role.id == identifier || role.name.replace(/\s+/g, '_').toLowerCase() == identifier) {
+    for (let role of context.guild.roles.values())
+        if (role.id == identifier)
             return role;
-        }
-    }
-    // }
+    for (let role of context.guild.roles.values())
+        if (role.name.toLowerCase() == identifier.toLowerCase())
+            return role;
     return null;
 }
 exports.getRole = getRole;
 function getChannel(context, identifier) {
-    if (typeof identifier === 'string') {
-        if (identifier.match(/\d+/g)) {
-            identifier = identifier.match(/\d+/g);
-        }
-    }
-    // for (let guild of context.guilds.values()) {
-    for (let channel of context.guild.channels.values()) {
-        if (channel.id == identifier || channel.name == identifier) {
+    for (let channel of context.guild.channels.values())
+        if (channel.id == identifier)
             return channel;
-        }
-    }
-    // }
+    for (let channel of context.guild.channels.values())
+        if (channel.name.toLowerCase() == identifier.toLowerCase())
+            return channel;
     return null;
 }
 exports.getChannel = getChannel;
 function getMember(context, identifier) {
-    if (typeof identifier === 'string') {
-        if ((identifier = identifier.replace(/\s+/g, '_').toLowerCase()).match(/\d+/g)) {
-            identifier = identifier.match(/\d+/g);
-        }
-    }
-    for (let member of context.guild.members.values()) {
-        if (member.id == identifier || member.user.username.replace(/\s+/g, '_').toLowerCase() == identifier) {
+    for (let member of context.guild.members.values())
+        if (member.id === identifier)
             return member;
-        }
-    }
+    for (let member of context.guild.members.values())
+        if (member.user.username.toLowerCase() == identifier.toLowerCase())
+            return member;
+    for (let member of context.guild.members.values())
+        if (member.nickname && member.nickname.toLowerCase() == identifier.toLowerCase())
+            return member;
     return null;
 }
 exports.getMember = getMember;
