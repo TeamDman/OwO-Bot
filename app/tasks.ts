@@ -12,7 +12,7 @@ export function refreshTasks() {
     taskList.length = 0;
     let files    = require('fs').readdirSync(__dirname + '/tasks/');
     for (let file of files) {
-        if (!file.endsWith('.js')) return;
+        if (!file.endsWith('.js')) continue;
         delete require.cache[require.resolve(`./tasks/${file}`)];
         taskList.push(require(`./tasks/${file}`).default);
     }
