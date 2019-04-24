@@ -9,7 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () { return new discord_js_1.RichEmbed({ image: args.shift().avatarURL }); });
+const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
+    let member = args.shift();
+    return new discord_js_1.RichEmbed()
+        .setTitle(`Avatar for ${member.displayName}`)
+        .setImage(member.user.avatarURL)
+        .addField('URL', member.user.avatarURL, true);
+});
 exports.default = {
     name: 'avatar',
     commands: ['avatar', 'pfp'],
