@@ -9,7 +9,7 @@ export type ParameterType =
     | 'INTEGER'
     | 'DECIMAL'
 
-export type Permission = PermissionString | 'MANAGE_BOT' | { roles: [string] }
+export type Permission = PermissionString | 'MANAGE_BOT' | 'HAS_ADMIN_ROLE' | { roles: [string] }
 
 export interface Parameter {
     name?: string,

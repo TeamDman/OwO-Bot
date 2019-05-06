@@ -6,7 +6,7 @@ import config                                                                   
 
 const commands: Command[] = [];
 
-export function getCommands():Command[] {
+export function getCommands(): Command[] {
     return commands;
 }
 
@@ -26,8 +26,12 @@ export function hasPermission(member: GuildMember, perm: Permission): boolean {
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
             return member.id in config.bot['bot manager ids'];
+        else if (perm === 'HAS_ADMIN_ROLE')
+            if (!(member.guild.id in config.bot['admin roles (guild:[channel])']))
+                return false;
+            else return Object.keys(config.bot['admin roles (guild:[channel])'])
+                .some(id => member.roles.has(id));
         return member.hasPermission(perm);
-
     } else {
         return (perm as { roles: [string] }).roles.some(r => member.roles.has(r));
     }
