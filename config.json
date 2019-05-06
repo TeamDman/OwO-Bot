@@ -48,13 +48,11 @@
         "invite link": "https://discord.gg/SYmvMM6"
     },
     "anti-mention": {
+        "_comment": "@Rei#0001",
         "match": "<@!?129439015849033728>",
         "countdown": 10,
         "ban reason": "Pinged rei .-.",
-        "pardon with any of these perms": [
-            "BAN_MEMBERS"
-        ],
-        "fun text": [
+        "fun texts": [
             "{name} has sinned.",
             "{name} feels a menacing presence...",
             "Something starts moving towards {name}...",
