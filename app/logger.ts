@@ -4,7 +4,7 @@ import {MessageContent}                          from './index';
 import {DMChannel, Guild, GuildChannel, Message} from 'discord.js';
 import {getChannel}                              from './utils';
 
-const stream = createWriteStream(config['log file'], {flags: 'a'});
+const stream = createWriteStream(config.bot['log file'], {flags: 'a'});
 
 export function augment(text: string): string {
     return `[${new Date().toLocaleString('en-ca')}] ${text}\n`;

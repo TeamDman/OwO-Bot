@@ -1,14 +1,22 @@
 {
-  "prefix": "OwO",
-  "log file": "logs.txt",
-  "presence": "nothing",
-  "presence type": 0,
-  "dev bot ids": {"431980306111660062": 1},
-  "bot manager ids": {"159018622600216577": 1},
-  "bot usage channel whitelists (guild:{channel})": {
-    "381386573830160396": {"452530315630477333": 1}
-  },
-  "bot report messages (guild:channel)": {
-    "381386573830160396": "452530315630477333"
-  }
+    "bot": {
+        "prefix": "OwO",
+        "log file": "logs.txt",
+        "presence": "nothing",
+        "presence type": 0,
+        "dev bot ids": {
+            "431980306111660062": 1
+        },
+        "bot manager ids": {
+            "159018622600216577": 1
+        },
+        "bot usage channel whitelists (guild:{channel})": {
+            "381386573830160396": {
+                "452530315630477333": 1
+            }
+        },
+        "bot report messages (guild:channel)": {
+            "381386573830160396": "452530315630477333"
+        }
+    }
 }
