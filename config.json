@@ -22,17 +22,16 @@
             "lurker": "383961038162231296",
             "events": "394157641129132032"
         },
+        "kick reason": "Oh snap!",
         "dm message": "You were removed from Shinobu Cafe for inactivity.",
         "invite prompt (empty to match anything)": "give me server",
         "invite link": "https://discord.gg/SYmvMM6"
     },
-    "antimention": {
-        "rei_irl": "<@!?129439015849033728>",
-        "rei_timer": 10,
-        "rei_banreason": "Pinged rei .-.",
-        "rei_mute": true,
-
-        "funtext": [
+    "anti-mention": {
+        "match": "<@!?129439015849033728>",
+        "countdown": 10,
+        "ban reason": "Pinged rei .-.",
+        "fun text": [
             "{name} has sinned.",
             "{name} feels a menacing presence...",
             "Something starts moving towards {name}...",
