@@ -70,4 +70,29 @@ function stopTask(client, identifier) {
     });
 }
 exports.stopTask = stopTask;
+function ListenerTask(name, listeners) {
+    let running = false;
+    this.name = name;
+    this.allowConcurrent = false;
+    this.autoStart = true;
+    this.start = (client) => {
+        if (running)
+            return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`${name} task is already running.`);
+        for (let key of Object.keys(listeners)) {
+            client.addListener(key, listeners[key]);
+        }
+        running = true;
+        return new discord_js_1.RichEmbed().setColor('GREEN').setDescription(`${name} task has been started.`);
+    };
+    this.stop = (client) => {
+        if (!running)
+            return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`${name} task is not running.`);
+        for (let key of Object.keys(listeners)) {
+            client.removeListener(key, listeners[key]);
+        }
+        running = false;
+        return new discord_js_1.RichEmbed().setColor('GREEN').setDescription(`${name} task has been stopped.`);
+    };
+}
+exports.ListenerTask = ListenerTask;
 //# sourceMappingURL=tasks.js.map

@@ -1,8 +1,17 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
 const config_1 = require("./config");
-const stream = fs_1.createWriteStream(config_1.default['log file'], { flags: 'a' });
+const utils_1 = require("./utils");
+const stream = fs_1.createWriteStream(config_1.default.bot['log file'], { flags: 'a' });
 function augment(text) {
     return `[${new Date().toLocaleString('en-ca')}] ${text}\n`;
 }
@@ -15,6 +24,17 @@ function info(text) {
     stream.write(s);
 }
 exports.info = info;
+function report(context, content) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!(context.id in config_1.default.bot['bot logger report channels (guild:channel)']))
+            return;
+        let channel = utils_1.getChannel(context, config_1.default.bot['bot logger report channels (guild:channel)'][context.id]);
+        if (channel === null)
+            return;
+        yield channel.send(content);
+    });
+}
+exports.report = report;
 function error(text) {
     if (text === null)
         return;

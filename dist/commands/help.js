@@ -31,7 +31,7 @@ const invoke = (message, route, args) => __awaiter(this, void 0, void 0, functio
                     .join('\n');
             };
             if ('parameters' in command) {
-                rtn.addField('Usage', `${config_1.default.prefix} ${command.commands[0]} ${command.parameters.map(p => `<${p.type} ${p.name}>`).join(' ')}`
+                rtn.addField('Usage', `${config_1.default.bot.prefix} ${command.commands[0]} ${command.parameters.map(p => `<${p.type} ${p.name}>`).join(' ')}`
                     + '\n\n' + buildParamString(command.parameters));
             }
             if ('routes' in command) {

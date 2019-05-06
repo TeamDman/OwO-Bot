@@ -10,33 +10,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger = require("./logger");
 function getRole(context, identifier) {
-    for (let role of context.guild.roles.values())
+    for (let role of context.roles.values())
         if (role.id == identifier)
             return role;
-    for (let role of context.guild.roles.values())
+    for (let role of context.roles.values())
         if (role.name.toLowerCase() == identifier.toLowerCase())
             return role;
     return null;
 }
 exports.getRole = getRole;
 function getChannel(context, identifier) {
-    for (let channel of context.guild.channels.values())
-        if (channel.id == identifier)
+    for (let channel of context.channels.values())
+        if (channel.id == identifier && channel.type === 'text')
             return channel;
-    for (let channel of context.guild.channels.values())
-        if (channel.name.toLowerCase() == identifier.toLowerCase())
+    for (let channel of context.channels.values())
+        if (channel.name.toLowerCase() == identifier.toLowerCase() && channel.type === 'text')
             return channel;
     return null;
 }
 exports.getChannel = getChannel;
 function getMember(context, identifier) {
-    for (let member of context.guild.members.values())
+    for (let member of context.members.values())
         if (member.id === identifier)
             return member;
-    for (let member of context.guild.members.values())
+    for (let member of context.members.values())
         if (member.user.username.toLowerCase() == identifier.toLowerCase())
             return member;
-    for (let member of context.guild.members.values())
+    for (let member of context.members.values())
         if (member.nickname && member.nickname.toLowerCase() == identifier.toLowerCase())
             return member;
     return null;
@@ -44,31 +44,31 @@ function getMember(context, identifier) {
 exports.getMember = getMember;
 function createPaginator(sourceMessage, message, next, prev) {
     return __awaiter(this, void 0, void 0, function* () {
-        const emojinext = '▶';
-        const emojiprev = '◀';
-        const emojistop = '❌';
+        const emojiNext = '▶';
+        const emojiPrev = '◀';
+        const emojiStop = '❌';
         try {
-            yield message.react(emojiprev);
-            yield message.react(emojinext);
-            // await message.react(emojistop);
+            yield message.react(emojiPrev);
+            yield message.react(emojiNext);
+            // await message.react(emojiStop);
             let handle = (reaction, user) => {
                 if (reaction.message.id !== message.id) {
                     return;
                 }
                 if (user.id !== sourceMessage.author.id ||
-                    reaction.emoji.name !== emojinext &&
-                        reaction.emoji.name !== emojiprev &&
-                        reaction.emoji.name !== emojistop) {
+                    reaction.emoji.name !== emojiNext &&
+                        reaction.emoji.name !== emojiPrev &&
+                        reaction.emoji.name !== emojiStop) {
                     return;
                 }
                 switch (reaction.emoji.name) {
-                    case emojinext:
+                    case emojiNext:
                         next();
                         break;
-                    case emojiprev:
+                    case emojiPrev:
                         prev();
                         break;
-                    case emojistop:
+                    case emojiStop:
                         message.delete().catch(e => logger.error(e));
                         sourceMessage.delete().catch(e => logger.error(e));
                         break;
@@ -91,7 +91,7 @@ function cleanContent(context, content) {
     return content
         .replace(/@(everyone|here)/g, '@\u200b$1')
         .replace(/<@!?[0-9]+>/g, input => {
-        const id = input.replace(/<|!|>|@/g, '');
+        const id = input.replace(/[<!>@]/g, '');
         if (this.channel.type === 'dm' || this.channel.type === 'group') {
             return context.client.users.has(id) ? `@${context.client.users.get(id).username}` : input;
         }
@@ -109,7 +109,7 @@ function cleanContent(context, content) {
         }
     })
         .replace(/<#[0-9]+>/g, input => {
-        const channel = context.client.channels.get(input.replace(/<|#|>/g, ''));
+        const channel = context.client.channels.get(input.replace(/[<#>]/g, ''));
         if (channel)
             return `#${channel.name}`;
         return input;
@@ -117,7 +117,7 @@ function cleanContent(context, content) {
         .replace(/<@&[0-9]+>/g, input => {
         if (context.channel.type === 'dm' || context.channel.type === 'group')
             return input;
-        const role = context.guild.roles.get(input.replace(/<|@|>|&/g, ''));
+        const role = context.guild.roles.get(input.replace(/[<@>&]/g, ''));
         if (role)
             return `@${role.name}`;
         return input;
