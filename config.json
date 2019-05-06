@@ -17,6 +17,11 @@
         },
         "bot logger report channels (guild:channel)": {
             "381386573830160396": "452530315630477333"
+        },
+        "admin roles (guild:{channel})": {
+            "381386573830160396": {
+                "383961248888258561": 1
+            }
         }
     }
 }
