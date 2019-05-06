@@ -1,5 +1,5 @@
 import {Client, Message, MessageAttachment, MessageEmbed, RichEmbed} from 'discord.js';
-import {CommandResult, Task}                                         from '../index';
+import {MessageContent, Task}                                        from '../index';
 import * as logger                                                   from '../logger';
 
 const listeners =  {
@@ -7,6 +7,7 @@ const listeners =  {
         if (message.author.bot) return;
         logger.info(`!!! ${getInfo(message)}\t${message.content}`);
         message.embeds.forEach((embed: MessageEmbed) => logger.info(`!!! ${getInfo(message)}\t${embed.type}embed:${embed.url}`));
+        // noinspection SpellCheckingInspection
         message.attachments.forEach((attachment: MessageAttachment) => logger.info(`!!! ${getInfo(message)}\turl:${attachment.url}`));
     },
     'messageUpdate': (original: Message, updated: Message) => {
@@ -23,7 +24,7 @@ function getInfo(message:Message) {
     return `${message.guild}\t#${'name' in message.channel && message.channel.name || 'UNKNOWN CHANNEL'}\t<@${message.author.id}> (${message.author.tag})`;
 }
 
-function start(client: Client): CommandResult {
+function start(client: Client): MessageContent {
     if (running)
         return new RichEmbed().setColor('ORANGE').setDescription('Logger task is already running.');
     for (let key of Object.keys(listeners)) {
@@ -34,7 +35,7 @@ function start(client: Client): CommandResult {
     return new RichEmbed().setColor('GREEN').setDescription('Logger task has been started.');
 }
 
-function stop(client: Client): CommandResult {
+function stop(client: Client): MessageContent {
     if (!running)
         return new RichEmbed().setColor('ORANGE').setDescription('Logger task is not running.');
     for (let key of Object.keys(listeners)) {

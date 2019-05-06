@@ -1,6 +1,6 @@
-import {Client, RichEmbed}   from 'discord.js';
-import * as logger           from './logger';
-import {CommandResult, Task} from './index';
+import {Client, RichEmbed}    from 'discord.js';
+import * as logger            from './logger';
+import {MessageContent, Task} from './index';
 
 const taskList: Task[] = [];
 
@@ -33,7 +33,7 @@ export function getTask(identifier: string): Task {
     return taskList.find(task => task.name.toLowerCase() == identifier.toLowerCase());
 }
 
-export async function startTask(client: Client, identifier: string): Promise<CommandResult> {
+export async function startTask(client: Client, identifier: string): Promise<MessageContent> {
     let task: Task = getTask(identifier);
     if (task === null)
         return new RichEmbed().setColor('ORANGE').setDescription(`Could not find task with identifier ${identifier}.`);
@@ -44,7 +44,7 @@ export async function startTask(client: Client, identifier: string): Promise<Com
     }
 }
 
-export async function stopTask(client: Client, identifier: string): Promise<CommandResult> {
+export async function stopTask(client: Client, identifier: string): Promise<MessageContent> {
     let task: Task = getTask(identifier);
     if (task === null)
         return new RichEmbed().setColor('ORANGE').setDescription(`Could not find task with identifier ${identifier}.`);

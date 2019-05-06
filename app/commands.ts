@@ -85,17 +85,17 @@ export async function attemptCommand(message: Message, command: Command, content
         let param = params[i];
         if (param.type === 'STRING') {
         } else if (param.type === 'USER') {
-            let user = utils.getMember(message, args[i]);
+            let user = utils.getMember(message.guild, args[i]);
             if (user === null)
                 return `User ${args[i]} was not found.`;
             args[i] = user;
         } else if (param.type === 'ROLE') {
-            let role = utils.getRole(message, args[i]);
+            let role = utils.getRole(message.guild, args[i]);
             if (role === null)
                 return `Role ${args[i]} was not found.`;
             args[i] = role;
         } else if (param.type === 'CHANNEL') {
-            let ch = utils.getChannel(message, args[i]);
+            let ch = utils.getChannel(message.guild, args[i]);
             if (ch === null)
                 return `Channel ${args[i]} was not found.`;
             args[i] = ch;
@@ -121,7 +121,7 @@ export async function attemptCommand(message: Message, command: Command, content
 export async function onMessage(message: Message) {
     try {
         if (message.author.bot) return;
-        if (message.channel.type === 'text' && message.guild.id in config['bot guild:[channel] whitelists'] && !(message.channel.id in config['bot guild:[channel] whitelists'][message.guild.id])) return;
+        if (message.channel.type === 'text' && message.guild.id in config['bot usage channel whitelists (guild:{channel})'] && !(message.channel.id in config['bot usage channel whitelists (guild:{channel})'][message.guild.id])) return;
         if (message.channel.type !== 'text') logger.info(logger.formatMessageToString(message));
         if (message.content.match(config.prefix) === null) return;
         if (message.channel.type !== 'text') return await message.channel.send('Commands can not be used outside of guilds.');
