@@ -1,14 +1,67 @@
 {
-  "prefix": "OwO",
-  "log file": "logs.txt",
-  "presence": "nothing",
-  "presence type": 0,
-  "dev bot ids": {"431980306111660062": 1},
-  "bot manager ids": {"159018622600216577": 1},
-  "bot usage channel whitelists (guild:{channel})": {
-    "381386573830160396": {"452530315630477333": 1}
-  },
-  "bot report messages (guild:channel)": {
-    "381386573830160396": "452530315630477333"
-  }
+    "prefix": "OwO",
+    "log file": "logs.txt",
+    "presence": "nothing",
+    "presence type": 0,
+    "dev bot ids": {
+        "431980306111660062": 1
+    },
+    "bot manager ids": {
+        "159018622600216577": 1
+    },
+    "bot usage channel whitelists (guild:{channel})": {
+        "381386573830160396": {
+            "452530315630477333": 1
+        }
+    },
+    "bot report messages (guild:channel)": {
+        "381386573830160396": "452530315630477333"
+    },
+    "snap": {
+        "must have more roles than these to not be purged": {
+            "lurker": "383961038162231296",
+            "events": "394157641129132032"
+        },
+        "dm message": "You were removed from Shinobu Cafe for inactivity.",
+        "invite prompt (empty to match anything)": "give me server",
+        "invite link": "https://discord.gg/SYmvMM6"
+    },
+    "antimention": {
+        "rei_irl": "<@!?129439015849033728>",
+        "rei_timer": 10,
+        "rei_banreason": "Pinged rei .-.",
+        "rei_mute": true,
+
+        "funtext": [
+            "{name} has sinned.",
+            "{name} feels a menacing presence...",
+            "Something starts moving towards {name}...",
+            "{name} has OOF'd.",
+            "{name} lost Brouzouf.",
+            "{name}'s legs are not OK.",
+            "{name}'s attack ultra-failed!",
+            "{name} is already dead.",
+            "{name} touched the cheese.",
+            "{name} poked the bear.",
+            "{name} is a horrible person.",
+            "A trapdoor opens underneath {name}.",
+            "{name}'s legs give way.",
+            "{name} hears a knocking at his door.",
+            "{name} shouldn't have done that.",
+            "{name} :fire: :skull:",
+            "{name} ate a wasp.",
+            "{name} dropped his ice cream cone.",
+            "{name} just got a movie he was looking forward to watching spoiled.",
+            "{name} didn't read the rules.",
+            "{name} locked his keys in his car.",
+            "{name} didn't thank the bus driver.",
+            "{name} killed the companion cube.",
+            "{name} stepped on a LEGO.",
+            "{name} dropped his phone in the toilet.",
+            "{name} wants to speak to the manager.",
+            "{name} thinks ugandan knuckles memes are funny.",
+            "{name} entered the lion's den.",
+            "{name} doesn't feel so good."
+        ]
+    }
 }

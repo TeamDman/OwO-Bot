@@ -5,7 +5,7 @@ import config                     from '../config';
 
 const invoke: CommandExecutor = async (message, args) => {
     message.channel.send("Oh snap!");
-    startPurge(message, args.shift());
+    await startPurge(message, args.shift());
 };
 
 export default {

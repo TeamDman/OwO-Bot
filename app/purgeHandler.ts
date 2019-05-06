@@ -1,49 +1,57 @@
-import {Collection, Guild, GuildMember, Message, Snowflake} from 'discord.js';
-import config                                               from './config';
-import {info}                                               from './logger';
+import {Collection, Guild, GuildChannel, GuildMember, Message, Snowflake, TextChannel} from 'discord.js';
+import config                                                                          from './config';
+import {info, report}                                                                  from './logger';
 
 let purging: boolean = false;
 
 export function shouldPurge(member: GuildMember): boolean {
-    return false;
+    if (member.user.bot)
+        return false;
+    let has = 0;
+    for (let role of Object.values(config.snap['must have more roles than these to not be purged']))
+        if (member.roles.has(role as string))
+            has++;
+    // If they only have those roles, then boot 'em.
+    return has === member.roles.size;
 }
 
-export async function startPurge(source: Message, count: number): Promise<void> {
-    let toPurge = source.guild.members
-        .filter(m =>
-            !m.user.bot &&
-            m.roles.size == (m.roles.has(config.role_lurker)?1:0) + (m.roles.has(config.role_events)?1:0) + 1
-        ).array().filter((_, index) => index < count);
+export async function startPurge(context: TextChannel, count: number): Promise<void> {
+    if (purging)
+        throw new Error("Already purging.");
+    let toPurge = context.guild.members
+        .filter(shouldPurge)
+        .array()
+        .filter((_, index) => index < count);
+    let startCount = toPurge.length;
+    info(`Purging ${startCount} members in ${context.guild.name}`);
     let startTime = Date.now();
     purging = true;
-    info(`Purging ${toPurge.length} members in ${source.guild.name}`)
-    let progressMessage = await source.channel.send('Purging...');
-    let report    = '';
-    await commands.report('Snapped members:');
-    for (let i = 0; i < amount && commands.purging; i++) {
-        let member = members.pop();
+    let progressMessage = await context.send('Purging...') as Message;
+    let reportText    = '';
+    await report(context.guild, 'Snapped members:');
+    for (let i = 0; purging && toPurge.length > 0; i++) {
+        let member = toPurge.pop();
         try {
-            if (config.snap_dm_message.length > 0) {
-                await member.send(config.snap_dm_message);
-            }
-            await member.kick('Oh snap!');
+            await purgeMember(member);
         } catch (e) {
             console.error(`Failed kicking user: ${e}`);
         }
-        report += `${member.user.id} ${member}\n`;
-        // if (i%Math.floor(Math.pow(members.length, 1/3))==0) {
+        reportText += `${member.user.id} ${member}\n`;
         if (i % 10 == 0) {
-            await purgingMessage.edit(`Purging... ${Math.floor((i / amount) * 100)}%`);
-            await commands.report(report);
-            report = '';
+            await progressMessage.edit(`Purging... ${Math.floor((i / startCount) * 100)}%`);
+            await report(context.guild, reportText);
+            reportText = '';
         }
     }
-    await purgingMessage.edit('Purging... 100%');
-    await channel.send(`Purged ${amount} members in ${Math.floor((Date.now() - startTime) / 1000)} seconds.`);
-    commands.purging = false;
-    console.log(`Purge complete, purged ${amount} members.`);
+    await progressMessage.edit('Purging... 100%');
+    await context.send(`Purged ${startCount} members in ${Math.floor((Date.now() - startTime) / 1000)} seconds.`);
+    purging = false;
+    console.log(`Purge complete, purged ${startCount} members.`);
 }
 
-export async function purge(member: GuildMember): Promise<void> {
-
+export async function purgeMember(member: GuildMember): Promise<void> {
+    if (config.snap_dm_message.length > 0) {
+        await member.send(config.snap_dm_message);
+    }
+    await member.kick('Oh snap!');
 }
