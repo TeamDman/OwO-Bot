@@ -46,10 +46,10 @@ export interface ParameterizedCommand extends CommandBase {
     executor: ParameterizedCommandExecutor
 }
 
-export type CommandResult = void | string | RichEmbed
-export type SimpleCommandExecutor = (message: Message) => Promise<CommandResult>
-export type RoutedCommandExecutor = (message: Message, route: string, args: any[]) => Promise<CommandResult>
-export type ParameterizedCommandExecutor = (message: Message, args: any[]) => Promise<CommandResult>
+export type MessageContent = void | string | RichEmbed
+export type SimpleCommandExecutor = (message: Message) => Promise<MessageContent>
+export type RoutedCommandExecutor = (message: Message, route: string, args: any[]) => Promise<MessageContent>
+export type ParameterizedCommandExecutor = (message: Message, args: any[]) => Promise<MessageContent>
 
 export type Command = SimpleCommand | RoutedCommand | ParameterizedCommand
 export type CommandExecutor = RoutedCommandExecutor | ParameterizedCommandExecutor
@@ -59,6 +59,6 @@ export interface Task {
     description: string,
     allowConcurrent: boolean,
     autoStart: boolean,
-    start: (client:Client) => CommandResult,
-    stop?: (client:Client) => CommandResult
+    start: (client:Client) => MessageContent,
+    stop?: (client:Client) => MessageContent
 }
