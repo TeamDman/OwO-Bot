@@ -110,10 +110,3 @@ export function cleanContent(context: Message, content: string): string {
             return input;
         });
 }
-
-export function isAdmin(member: GuildMember): boolean {
-    if (!(member.guild.id in config.bot['admin roles (guild:[channel])']))
-        return false;
-    return Object.keys(config.bot['admin roles (guild:[channel])'])
-        .some(id => member.roles.has(id));
-}
