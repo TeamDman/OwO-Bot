@@ -21,11 +21,11 @@ export function init() {
 }
 
 export function hasPermission(member: GuildMember, perm: Permission): boolean {
-    if (member.id in config['bot manager ids'] && member.client.user.id in config['dev bot ids'])
+    if (member.id in config.bot['bot manager ids'] && member.client.user.id in config.bot['dev bot ids'])
         return true;
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
-            return member.id in config['bot manager ids'];
+            return member.id in config.bot['bot manager ids'];
         return member.hasPermission(perm);
 
     } else {
@@ -121,12 +121,12 @@ export async function attemptCommand(message: Message, command: Command, content
 export async function onMessage(message: Message) {
     try {
         if (message.author.bot) return;
-        if (message.channel.type === 'text' && message.guild.id in config['bot usage channel whitelists (guild:{channel})'] && !(message.channel.id in config['bot usage channel whitelists (guild:{channel})'][message.guild.id])) return;
+        if (message.channel.type === 'text' && message.guild.id in config.bot['bot usage channel whitelists (guild:{channel})'] && !(message.channel.id in config['bot usage channel whitelists (guild:{channel})'][message.guild.id])) return;
         if (message.channel.type !== 'text') logger.info(logger.formatMessageToString(message));
-        if (message.content.match(config.prefix) === null) return;
+        if (message.content.match(config.bot.prefix) === null) return;
         if (message.channel.type !== 'text') return await message.channel.send('Commands can not be used outside of guilds.');
 
-        let tokens = message.content.substr(message.content.match(config.prefix).index + config.prefix.length + 1).split(' ');
+        let tokens = message.content.substr(message.content.match(config.bot.prefix).index + config.prefix.length + 1).split(' ');
         let cmd    = tokens.shift().trim();
         for (let command of commands) {
             if (command.commands.some(c => cmd.match(c) !== null)) {

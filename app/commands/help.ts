@@ -25,7 +25,7 @@ const invoke: CommandExecutor = async (message: Message, route: string, args: an
             };
 
             if ('parameters' in command) {
-                rtn.addField('Usage', `${config.prefix} ${command.commands[0]} ${command.parameters.map(p => `<${p.type} ${p.name}>`).join(' ')}`
+                rtn.addField('Usage', `${config.bot.prefix} ${command.commands[0]} ${command.parameters.map(p => `<${p.type} ${p.name}>`).join(' ')}`
                     + '\n\n' + buildParamString(command.parameters));
             }
             if ('routes' in command) {
