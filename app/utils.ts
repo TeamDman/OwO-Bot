@@ -1,5 +1,6 @@
 import {Channel, Guild, GuildChannel, GuildMember, Message, Role, TextChannel} from 'discord.js';
 import * as logger                                                             from './logger';
+import config                                                                  from './config';
 
 export function getRole(context: Guild, identifier: string): Role {
     for (let role of context.roles.values())
@@ -108,4 +109,11 @@ export function cleanContent(context: Message, content: string): string {
             if (role) return `@${role.name}`;
             return input;
         });
+}
+
+export function isAdmin(member: GuildMember): boolean {
+    if (!(member.guild.id in config.bot['admin roles (guild:[channel])']))
+        return false;
+    return Object.keys(config.bot['admin roles (guild:[channel])'])
+        .some(id => member.roles.has(id));
 }
