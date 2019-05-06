@@ -146,7 +146,7 @@ function onMessage(message) {
         try {
             if (message.author.bot)
                 return;
-            if (message.channel.type === 'text' && message.guild.id in config_1.default.bot['bot usage channel whitelists (guild:{channel})'] && !(message.channel.id in config_1.default['bot usage channel whitelists (guild:{channel})'][message.guild.id]))
+            if (message.channel.type === 'text' && message.guild.id in config_1.default.bot['bot usage channel whitelists (guild:{channel})'] && !(message.channel.id in config_1.default.bot['bot usage channel whitelists (guild:{channel})'][message.guild.id]))
                 return;
             if (message.channel.type !== 'text')
                 logger.info(logger.formatMessageToString(message));
@@ -154,7 +154,7 @@ function onMessage(message) {
                 return;
             if (message.channel.type !== 'text')
                 return yield message.channel.send('Commands can not be used outside of guilds.');
-            let tokens = message.content.substr(message.content.match(config_1.default.bot.prefix).index + config_1.default.prefix.length + 1).split(' ');
+            let tokens = message.content.substr(message.content.match(config_1.default.bot.prefix).index + config_1.default.bot.prefix.length + 1).split(' ');
             let cmd = tokens.shift().trim();
             for (let command of commands) {
                 if (command.commands.some(c => cmd.match(c) !== null)) {
