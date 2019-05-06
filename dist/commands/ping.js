@@ -21,7 +21,7 @@ const invoke = (message, route, args) => __awaiter(this, void 0, void 0, functio
     }
 });
 exports.default = {
-    name: 'ping',
+    name: 'Ping',
     commands: ['ping'],
     description: 'Makes the bot print to the chat.',
     routes: {

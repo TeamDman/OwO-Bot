@@ -29,11 +29,17 @@ function init() {
 }
 exports.init = init;
 function hasPermission(member, perm) {
-    if (member.id in config_1.default['bot manager ids'] && member.client.user.id in config_1.default['dev bot ids'])
+    if (member.id in config_1.default.bot['bot manager ids'] && member.client.user.id in config_1.default.bot['dev bot ids'])
         return true;
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
-            return member.id in config_1.default['bot manager ids'];
+            return member.id in config_1.default.bot['bot manager ids'];
+        else if (perm === 'HAS_ADMIN_ROLE')
+            if (!(member.guild.id in config_1.default.bot['admin roles (guild:[channel])']))
+                return false;
+            else
+                return Object.keys(config_1.default.bot['admin roles (guild:[channel])'])
+                    .some(id => member.roles.has(id));
         return member.hasPermission(perm);
     }
     else {
@@ -97,19 +103,19 @@ function attemptCommand(message, command, content) {
             if (param.type === 'STRING') {
             }
             else if (param.type === 'USER') {
-                let user = utils.getMember(message, args[i]);
+                let user = utils.getMember(message.guild, args[i]);
                 if (user === null)
                     return `User ${args[i]} was not found.`;
                 args[i] = user;
             }
             else if (param.type === 'ROLE') {
-                let role = utils.getRole(message, args[i]);
+                let role = utils.getRole(message.guild, args[i]);
                 if (role === null)
                     return `Role ${args[i]} was not found.`;
                 args[i] = role;
             }
             else if (param.type === 'CHANNEL') {
-                let ch = utils.getChannel(message, args[i]);
+                let ch = utils.getChannel(message.guild, args[i]);
                 if (ch === null)
                     return `Channel ${args[i]} was not found.`;
                 args[i] = ch;
@@ -140,15 +146,15 @@ function onMessage(message) {
         try {
             if (message.author.bot)
                 return;
-            if (message.channel.type === 'text' && message.guild.id in config_1.default['bot guild:[channel] whitelists'] && !(message.channel.id in config_1.default['bot guild:[channel] whitelists'][message.guild.id]))
+            if (message.channel.type === 'text' && message.guild.id in config_1.default.bot['bot usage channel whitelists (guild:{channel})'] && !(message.channel.id in config_1.default['bot usage channel whitelists (guild:{channel})'][message.guild.id]))
                 return;
             if (message.channel.type !== 'text')
                 logger.info(logger.formatMessageToString(message));
-            if (message.content.match(config_1.default.prefix) === null)
+            if (message.content.match(config_1.default.bot.prefix) === null)
                 return;
             if (message.channel.type !== 'text')
                 return yield message.channel.send('Commands can not be used outside of guilds.');
-            let tokens = message.content.substr(message.content.match(config_1.default.prefix).index + config_1.default.prefix.length + 1).split(' ');
+            let tokens = message.content.substr(message.content.match(config_1.default.bot.prefix).index + config_1.default.prefix.length + 1).split(' ');
             let cmd = tokens.shift().trim();
             for (let command of commands) {
                 if (command.commands.some(c => cmd.match(c) !== null)) {
