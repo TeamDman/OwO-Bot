@@ -1,65 +1,68 @@
-import {Channel, GuildMember, Message, Role} from 'discord.js';
-import * as logger                           from './logger';
+import {Channel, Guild, GuildChannel, GuildMember, Message, Role, TextChannel} from 'discord.js';
+import * as logger                                                             from './logger';
+import config                                                                  from './config';
 
-export function getRole(context: Message, identifier: string): Role {
-    for (let role of context.guild.roles.values())
+export function getRole(context: Guild, identifier: string): Role {
+    for (let role of context.roles.values())
         if (role.id == identifier)
             return role;
-    for (let role of context.guild.roles.values())
+    for (let role of context.roles.values())
         if (role.name.toLowerCase() == identifier.toLowerCase())
             return role;
     return null;
 }
 
-export function getChannel(context: Message, identifier: string): Channel {
-    for (let channel of context.guild.channels.values())
-        if (channel.id == identifier)
-            return channel;
-    for (let channel of context.guild.channels.values())
-        if (channel.name.toLowerCase() == identifier.toLowerCase())
-            return channel;
+export function getChannel(context: Guild, identifier: string): TextChannel {
+    for (let channel of context.channels.values())
+        if (channel.id == identifier && channel.type === 'text')
+            return channel as any;
+    for (let channel of context.channels.values())
+        if (channel.name.toLowerCase() == identifier.toLowerCase() && channel.type === 'text')
+            return channel as any;
     return null;
 }
 
-export function getMember(context: Message, identifier: string): GuildMember {
-    for (let member of context.guild.members.values())
+
+
+export function getMember(context: Guild, identifier: string): GuildMember {
+    for (let member of context.members.values())
         if (member.id === identifier)
             return member;
-    for (let member of context.guild.members.values())
+    for (let member of context.members.values())
         if (member.user.username.toLowerCase() == identifier.toLowerCase())
             return member;
-    for (let member of context.guild.members.values())
+    for (let member of context.members.values())
         if (member.nickname && member.nickname.toLowerCase() == identifier.toLowerCase())
             return member;
     return null;
 }
 
 export async function createPaginator(sourceMessage: Message, message: Message, next, prev): Promise<void> {
-    const emojinext = '▶';
-    const emojiprev = '◀';
-    const emojistop = '❌';
+    const emojiNext = '▶';
+    const emojiPrev = '◀';
+    const emojiStop = '❌';
     try {
-        await message.react(emojiprev);
-        await message.react(emojinext);
-        // await message.react(emojistop);
+        await message.react(emojiPrev);
+        await message.react(emojiNext);
+        // await message.react(emojiStop);
         let handle = (reaction, user) => {
             if (reaction.message.id !== message.id) {
                 return;
             }
             if (user.id !== sourceMessage.author.id ||
-                reaction.emoji.name !== emojinext &&
-                reaction.emoji.name !== emojiprev &&
-                reaction.emoji.name !== emojistop) {
+                reaction.emoji.name !== emojiNext &&
+                reaction.emoji.name !== emojiPrev &&
+                reaction.emoji.name !== emojiStop) {
                 return;
             }
             switch (reaction.emoji.name) {
-                case emojinext:
+                case emojiNext:
                     next();
                     break;
-                case emojiprev:
+                case emojiPrev:
                     prev();
                     break;
-                case emojistop:
+                case emojiStop:
                     message.delete().catch(e => logger.error(e));
                     sourceMessage.delete().catch(e => logger.error(e));
                     break;
@@ -80,7 +83,7 @@ export function cleanContent(context: Message, content: string): string {
     return content
         .replace(/@(everyone|here)/g, '@\u200b$1')
         .replace(/<@!?[0-9]+>/g, input => {
-            const id = input.replace(/<|!|>|@/g, '');
+            const id = input.replace(/[<!>@]/g, '');
             if (this.channel.type === 'dm' || this.channel.type === 'group') {
                 return context.client.users.has(id) ? `@${context.client.users.get(id).username}` : input;
             }
@@ -96,13 +99,13 @@ export function cleanContent(context: Message, content: string): string {
             }
         })
         .replace(/<#[0-9]+>/g, input => {
-            const channel: any = context.client.channels.get(input.replace(/<|#|>/g, ''));
+            const channel: any = context.client.channels.get(input.replace(/[<#>]/g, ''));
             if (channel) return `#${channel.name}`;
             return input;
         })
         .replace(/<@&[0-9]+>/g, input => {
             if (context.channel.type === 'dm' || context.channel.type === 'group') return input;
-            const role = context.guild.roles.get(input.replace(/<|@|>|&/g, ''));
+            const role = context.guild.roles.get(input.replace(/[<@>&]/g, ''));
             if (role) return `@${role.name}`;
             return input;
         });

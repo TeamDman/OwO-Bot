@@ -14,7 +14,7 @@ const invoke: CommandExecutor = async (message, route, args) => {
 };
 
 export default {
-    name:       'ping',
+    name:       'Ping',
     commands:   ['ping'],
     description: 'Makes the bot print to the chat.',
     routes: {

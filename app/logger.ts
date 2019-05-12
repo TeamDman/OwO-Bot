@@ -1,9 +1,10 @@
-import {createWriteStream}                from 'fs';
-import config                             from './config';
-import {CommandResult}                    from './index';
-import {DMChannel, GuildChannel, Message} from 'discord.js';
+import {createWriteStream}                       from 'fs';
+import config                                    from './config';
+import {MessageContent}                          from './index';
+import {DMChannel, Guild, GuildChannel, Message} from 'discord.js';
+import {getChannel}                              from './utils';
 
-const stream = createWriteStream(config['log file'], {flags: 'a'});
+const stream = createWriteStream(config.bot['log file'], {flags: 'a'});
 
 export function augment(text: string): string {
     return `[${new Date().toLocaleString('en-ca')}] ${text}\n`;
@@ -17,6 +18,22 @@ export function info(text: string): void {
     stream.write(s);
 }
 
+export async function report(context: Guild, content: MessageContent): Promise<void> {
+    if (!(context.id in config.bot['bot logger report channels (guild:channel)']))
+        return;
+    let channel = getChannel(context, config.bot['bot logger report channels (guild:channel)'][context.id]);
+    if (channel === null)
+        return;
+    await channel.send(content);
+}
+
+export function warn(text: string): void {
+    if (text === null) return;
+    let s = augment(`[WARNING] ${text}`);
+    process.stdout.write(s);
+    stream.write(s);
+}
+
 export function error(text: string): void {
     if (text === null) return;
     let s = augment(`[ERROR] ${text}`);
@@ -24,7 +41,7 @@ export function error(text: string): void {
     stream.write(s);
 }
 
-export function strip(v: CommandResult): string {
+export function strip(v: MessageContent): string {
     if (v === null || v === undefined)
         return null;
 

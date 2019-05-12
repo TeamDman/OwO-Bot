@@ -1,15 +1,39 @@
 {
-  "prefix": "OwO",
-  "log file": "logs.txt",
-  "presence": "nothing",
-  "presence type": 0,
-  "dev bot ids": {"431980306111660062": 1},
-  "bot manager ids": {"159018622600216577": 1},
-  "bot guild:[channel] whitelists": {
-    "381386573830160396": {"452530315630477333": 1}
-  },
-  "trusted github issue creator roles": [
-    "569940380343074826","ftb",
-    "146626489444597771","breakinblocks"
-  ]
+    "bot": {
+        "prefix": "OwO",
+        "log file": "logs.txt",
+        "presence": "nothing",
+        "presence type": 0,
+        "dev bot ids": {
+            "_comment": "OwO",
+            "431980306111660062": 1
+        },
+        "bot manager ids": {
+            "_comment": "For whoever hosts the bot.",
+            "__comment": "Some operations are dangerous, like `eval` command.",
+            "___comment": "@Teamy#9201",
+            "159018622600216577": 1
+        },
+        "bot usage channel whitelists (guild:{channel})": {
+            "_comment": "Shinobu Cafe",
+            "381386573830160396": {
+                "_comment": "#developers-talk",
+                "452530315630477333": 1
+            }
+        },
+        "bot logger report channels (guild:channel)": {
+            "_comment": "For logging that isn't to console.",
+            "__comment": "[Shinobu Cafe]:[#developers-talk]",
+            "381386573830160396": "452530315630477333"
+        },
+        "admin roles (guild:{channel})": {
+            "_comment": "Some guilds use bots to manage, so checking perms isn't viable.",
+            "__comment": "This option allows for custom admin roles to be used.",
+            "___comment": "Shinobu Cafe",
+            "381386573830160396": {
+                "_comment": "Supreme Beings",
+                "383961248888258561": 1
+            }
+        }
+    }
 }

@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const logger = require("./logger");
+const logger_1 = require("./logger");
 const taskList = [];
 function getTasks() {
     return taskList;
@@ -22,7 +23,12 @@ function refreshTasks() {
         if (!file.endsWith('.js'))
             continue;
         delete require.cache[require.resolve(`./tasks/${file}`)];
-        taskList.push(require(`./tasks/${file}`).default);
+        let task = require(`./tasks/${file}`).default;
+        if (task.name === undefined || task.description === undefined) {
+            logger_1.warn('Task name and description must not be null, skipping.');
+            continue;
+        }
+        taskList.push(task);
     }
 }
 exports.refreshTasks = refreshTasks;
@@ -51,7 +57,7 @@ function startTask(client, identifier) {
             return yield task.start(client);
         }
         catch (error) {
-            return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(error);
+            return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`Error starting task ${identifier}: ${error}`);
         }
     });
 }
@@ -65,9 +71,38 @@ function stopTask(client, identifier) {
             return yield task.stop(client);
         }
         catch (error) {
-            return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(error);
+            return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`Error stopping task ${identifier}: ${error}`);
         }
     });
 }
 exports.stopTask = stopTask;
+function ListenerTask(properties) {
+    for (const [key, value] of Object.entries(properties))
+        if (key !== 'listeners')
+            this[key] = value;
+    //set defaults
+    for (const [key, value] of Object.entries({ allowConcurrent: false, autoStart: true }))
+        if (this[key] === undefined)
+            this[key] = value;
+    this.runningCount = 0;
+    this.start = (client) => {
+        if (this.runningCount === 1)
+            return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`${properties.name} task is already running.`);
+        for (const [key, value] of Object.entries(properties.listeners)) {
+            client.addListener(key, value);
+        }
+        this.runningCount = 1;
+        return new discord_js_1.RichEmbed().setColor('GREEN').setDescription(`${properties.name} task has been started.`);
+    };
+    this.stop = (client) => {
+        if (this.runningCount === 0)
+            return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`${properties.name} task is not running.`);
+        for (const [key, value] of Object.entries(properties.listeners)) {
+            client.removeListener(key, value);
+        }
+        this.runningCount = 0;
+        return new discord_js_1.RichEmbed().setColor('GREEN').setDescription(`${properties.name} task has been stopped.`);
+    };
+}
+exports.ListenerTask = ListenerTask;
 //# sourceMappingURL=tasks.js.map

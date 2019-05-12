@@ -7,7 +7,7 @@ const invoke: CommandExecutor = async (message, args) => {
         .setTitle(`Avatar for ${member.displayName}`)
         .setImage(member.user.avatarURL)
         .addField('URL',member.user.avatarURL, true);
-}
+};
 
 export default {
     name:       'avatar',

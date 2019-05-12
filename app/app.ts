@@ -21,7 +21,7 @@ client.on('ready', () => {
     clearInterval(loading);
     console.log();
 
-    client.user.setActivity(config.presence, {type: config['presence_type']}).catch(logger.error);
+    client.user.setActivity(config.bot.presence, {type: config.bot['presence type']}).catch(logger.error);
     logger.info(`Logged in as ${client.user.username}\nMonitoring ${client.users.size} users in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
 
     tasks.init(client);
