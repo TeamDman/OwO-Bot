@@ -32,6 +32,7 @@ async function handle(message: Message) {
         .setDescription(getRandomText(message.author))
         .setFooter(`${timer} seconds`);
     let display = await message.channel.send(embed) as Message;
+    display.react('✅').catch(e => console.error(e));
     let hook    = setInterval(async () => {
         await display.edit(embed.setFooter(`${--timer} seconds`));
         if (timer !== 0) return;
@@ -44,12 +45,13 @@ async function handle(message: Message) {
             .setDescription(`${message.author} was banned for mentioning Rei.`));
     }, 1000);
 
-    display.createReactionCollector((react, user) =>
+    let collector = display.createReactionCollector((react, user) =>
         user.id !== message.client.user.id &&
         hasPermission(message.guild.members.get(user.id), 'HAS_ADMIN_ROLE') &&
         react.emoji.name === '✅'
     ).on('collect', async () => {
         clearInterval(hook);
+        collector.stop('pardoned');
         // commands.unmute(message.member).catch(e => console.error(e));
         display.clearReactions().catch(e => console.error(e));
         display.edit(embed.setColor('GREEN')).catch(e => console.error(e));
