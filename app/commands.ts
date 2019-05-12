@@ -26,11 +26,6 @@ export function hasPermission(member: GuildMember, perm: Permission): boolean {
     if (typeof perm === 'string') {
         if (perm === 'MANAGE_BOT')
             return member.id in config.bot['bot manager ids'];
-        else if (perm === 'HAS_ADMIN_ROLE')
-            if (!(member.guild.id in config.bot['admin roles']))
-                return false;
-            else return Object.keys(config.bot['admin roles'])
-                .some(id => member.roles.has(id));
         return member.hasPermission(perm);
     } else {
         return (perm as { roles: [string] }).roles.some(r => member.roles.has(r));
@@ -54,7 +49,17 @@ export async function attemptCommand(message: Message, command: Command, content
     logger.info(logger.formatMessageToString(message));
     if (message.channel.type !== 'text' && command.requiresGuildContext)
         return `Commands can not be used outside of guilds.`;
-    if ((command.permissions || []).some(perm => !hasPermission(message.member, perm)))
+    if (
+        typeof command.permissions === 'string'
+            ? (
+                (
+                    !(message.guild.id in config.bot['admin roles'])
+                    || !Object.keys(config.bot['admin roles'])
+                        .some(id => message.member.roles.has(id))
+                )
+            )
+            : (command.permissions || []).some(perm => !hasPermission(message.member, perm))
+    )
         return 'You do not have permissions to use this command.';
     let args = content.match(/\\?.|^$/g).reduce((p: any, c: any) => {
         if (c === '"') {
