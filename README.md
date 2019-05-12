@@ -21,14 +21,17 @@ Tasks are individual `.ts` files located in `/app/tasks/`.\
 Tasks take no parameters, and are used to extend the bot's functionality beyond the addition of commands.\
 Tasks are able to run when the bot begins, an example is the `Logger` task. This task logs edited and deleted messages.
 
-## Development
+## Setup
+Run `npm install` to download required dependencies.
+
+### Development
 The bot is written in typescript. This means that when you change one of the `.ts` files, you have to recompile using the `tsc` command.\
 you can use `tsc --watch` to have it automatically rebuild when it detects a file change.\
 If you don't want to install typescript globally (`npm -i typescript -g`) for the `tsc` command, you can:
 - `npm run build`
 - Run the typescript compiler manually `node node_modules/typescript/bin/tsc`
 
-## Running
+### Running
 Run the bot with either:
 - `npm run start`
 - `node dist/app.js`
