@@ -51,7 +51,11 @@ export async function startPurge(context: TextChannel, count: number): Promise<v
 
 export async function purgeMember(member: GuildMember): Promise<void> {
     if (config.snap_dm_message.length > 0) {
-        await member.send(config.snap['dm message']);
+        try {
+            await member.send(config.snap['dm message']);
+        } catch (e) {
+            // Can't dm user, do nothing.
+        }
     }
     await member.kick(config.snap['kick reason']);
 }
