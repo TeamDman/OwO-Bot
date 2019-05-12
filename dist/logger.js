@@ -26,9 +26,9 @@ function info(text) {
 exports.info = info;
 function report(context, content) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!(context.id in config_1.default.bot['bot logger report channels (guild:channel)']))
+        if (!(context.id in config_1.default.bot['bot logger report channels']))
             return;
-        let channel = utils_1.getChannel(context, config_1.default.bot['bot logger report channels (guild:channel)'][context.id]);
+        let channel = utils_1.getChannel(context, config_1.default.bot['bot logger report channels'][context.id]);
         if (channel === null)
             return;
         yield channel.send(content);
