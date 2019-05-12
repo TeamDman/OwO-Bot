@@ -45,9 +45,7 @@
         },
         "kick reason": "Oh snap!",
         "begin message": "Oh snap!",
-        "dm message": "You were removed from Shinobu Cafe for inactivity.",
-        "invite prompt (empty to match anything)": "give me server",
-        "invite link": "https://discord.gg/SYmvMM6"
+        "dm message": "You were removed from Shinobu Cafe for inactivity."
     },
     "dm for invite": {
         "match": "give link",
