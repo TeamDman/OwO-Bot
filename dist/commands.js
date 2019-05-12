@@ -62,7 +62,7 @@ exports.isRouted = isRouted;
 function attemptCommand(message, command, content) {
     return __awaiter(this, void 0, void 0, function* () {
         logger.info(logger.formatMessageToString(message));
-        if (message.channel.type !== 'text')
+        if (message.channel.type !== 'text' && command.requiresGuildContext)
             return `Commands can not be used outside of guilds.`;
         if ((command.permissions || []).some(perm => !hasPermission(message.member, perm)))
             return 'You do not have permissions to use this command.';
@@ -152,8 +152,6 @@ function onMessage(message) {
                 logger.info(logger.formatMessageToString(message));
             if (message.content.match(config_1.default.bot.prefix) === null)
                 return;
-            if (message.channel.type !== 'text')
-                return yield message.channel.send('Commands can not be used outside of guilds.');
             let tokens = message.content.substr(message.content.match(config_1.default.bot.prefix).index + config_1.default.bot.prefix.length + 1).split(' ');
             let cmd = tokens.shift().trim();
             for (let command of commands) {
