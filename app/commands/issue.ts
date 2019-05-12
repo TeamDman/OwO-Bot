@@ -18,7 +18,7 @@ export default {
     name:        'Issue',
     commands:    ['issue'],
     description: 'Creates issues on the FTB:Interactions Github tracker',
-    permissions: [{roles: Array.from(config['trusted github issue creator roles'])}],
+    permissions: [{roles: config['trusted github issue creator roles']}],
     parameters:  [{
         name: 'Title',
         type: 'STRING'
