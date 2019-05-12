@@ -30,7 +30,7 @@ const invoke: CommandExecutor = async (message: Message, route: string, args: an
             }
             if ('routes' in command) {
                 for (let route of Object.keys(command.routes)) {
-                    rtn.addField(command.routes[route].name || route || '*', `${config.prefix} ${command.commands[0]} ${route} ${(command.routes[route].parameters || []).map(p => `<${p.type} ${p.name}>`).join(' ')}`
+                    rtn.addField(command.routes[route].name || route || '*', `${config.bot.prefix} ${command.commands[0]} ${route} ${(command.routes[route].parameters || []).map(p => `<${p.type} ${p.name}>`).join(' ')}`
                         + `\n${command.routes[route].description}\n` + buildParamString(command.routes[route].parameters || []));
                 }
             }
