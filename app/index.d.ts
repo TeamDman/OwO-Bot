@@ -15,12 +15,12 @@ export interface Parameter {
     name?: string;
     description?: string;
     type: ParameterType;
-    permissions?: Permission[];
 }
 
 export interface Route {
     name?: string;
     description?: string;
+    permissions?: Permission[],
     parameters?: Parameter[];
 }
 
@@ -28,7 +28,7 @@ export interface CommandBase {
     name: string;
     commands: string[];
     description?: string;
-    permissions?: 'HAS_ADMIN_ROLE' | Permission[];
+    permissions?: Permission[];
     requiresGuildContext?: boolean;
 }
 

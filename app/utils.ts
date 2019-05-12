@@ -1,5 +1,7 @@
-import {Guild, GuildMember, Message, Role, TextChannel} from 'discord.js';
-import * as logger                                      from './logger';
+import {Client, Guild, GuildMember, Message, RichEmbed, Role, TextChannel} from 'discord.js';
+import * as logger                                                         from './logger';
+import {MessageContent}                                                    from './index';
+import {warn}                                                              from './logger';
 
 export function getRole(context: Guild, identifier: string): Role {
     for (let role of context.roles.values())
@@ -107,4 +109,26 @@ export function cleanContent(context: Message, content: string): string {
             if (role) return `@${role.name}`;
             return input;
         });
+}
+
+export async function hackBan(client:Client, identifier: string, reason:string): Promise<MessageContent> {
+    let banCount = 0;
+    let hackBanCount = 0;
+    for (const [, guild] of client.guilds) {
+        try {
+            hackBanCount += guild.members.has(identifier)?1:0;
+            await guild.ban(identifier, reason);
+            banCount++;
+        } catch (e) {
+            hackBanCount--;
+            warn(`Failed to ban ${identifier} in guild ${guild.name}. ${e}`);
+        }
+    }
+
+    return new RichEmbed()
+        .setTitle('Chain Ban Results')
+        .setColor('RED')
+        .addField('Ban Results',`User was banned from [${banCount}] of [${client.guilds.size}] available guilds.`)
+        .addField('Hackban results', `User was pre-banned from [${hackBanCount}] of [${client.guilds.size}] available guilds.`)
+        .setFooter(new Date().toLocaleString('en-ca'))
 }
