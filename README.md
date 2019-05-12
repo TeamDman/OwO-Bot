@@ -1,4 +1,4 @@
-# OwO Bot \[Core\]
+# OwO Bot \[Eto\]
 Most configuration is done in `config.json`.\
 Make sure to set your bot token like in the `.env.example`, either as an environment variable or in a `.env` file.\
 The default prefix is `OwO`, and it is what will be used in the examples in this README.

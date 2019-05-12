@@ -4,8 +4,9 @@ import config                     from '../config';
 
 
 const invoke: CommandExecutor = async (message, args) => {
-    message.channel.send(config['begin message']);
-    await startPurge(message, args.shift());
+    message.channel.send(config.snap['begin message']);
+    let count = args.shift();
+    await startPurge(message, count || Number.MAX_SAFE_INTEGER);
 };
 
 export default {
@@ -16,7 +17,7 @@ export default {
     parameters: [{
         name: 'Count',
         type: 'INTEGER',
-        description: 'Number of users to remove (0 for all).'
+        description: 'Number of users to remove (0 or empty for all).'
     }],
     executor:   invoke
 } as Command;

@@ -29,7 +29,8 @@ export async function startPurge(context: TextChannel, count: number): Promise<v
     let progressMessage = await context.send('Purging...') as Message;
     let reportText    = '';
     await report(context.guild, 'Snapped members:');
-    for (let i = 0; purging && toPurge.length > 0; i++) {
+    let i=0;
+    for (; purging && toPurge.length > 0; i++) {
         let member = toPurge.pop();
         try {
             await purgeMember(member);
@@ -44,7 +45,7 @@ export async function startPurge(context: TextChannel, count: number): Promise<v
         }
     }
     await progressMessage.edit('Purging... 100%');
-    await context.send(`Purged ${startCount} members in ${Math.floor((Date.now() - startTime) / 1000)} seconds.`);
+    await context.send(`Purged ${i} members in ${Math.floor((Date.now() - startTime) / 1000)} seconds.`);
     purging = false;
     console.log(`Purge complete, purged ${startCount} members.`);
 }

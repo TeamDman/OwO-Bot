@@ -37,7 +37,8 @@ function startPurge(context, count) {
         let progressMessage = yield context.send('Purging...');
         let reportText = '';
         yield logger_1.report(context.guild, 'Snapped members:');
-        for (let i = 0; purging && toPurge.length > 0; i++) {
+        let i = 0;
+        for (; purging && toPurge.length > 0; i++) {
             let member = toPurge.pop();
             try {
                 yield purgeMember(member);
@@ -53,7 +54,7 @@ function startPurge(context, count) {
             }
         }
         yield progressMessage.edit('Purging... 100%');
-        yield context.send(`Purged ${startCount} members in ${Math.floor((Date.now() - startTime) / 1000)} seconds.`);
+        yield context.send(`Purged ${i} members in ${Math.floor((Date.now() - startTime) / 1000)} seconds.`);
         purging = false;
         console.log(`Purge complete, purged ${startCount} members.`);
     });

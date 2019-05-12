@@ -11,8 +11,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const purgeHandler_1 = require("../purgeHandler");
 const config_1 = require("../config");
 const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
-    message.channel.send(config_1.default['begin message']);
-    yield purgeHandler_1.startPurge(message, args.shift());
+    message.channel.send(config_1.default.snap['begin message']);
+    let count = args.shift();
+    yield purgeHandler_1.startPurge(message, count || Number.MAX_SAFE_INTEGER);
 });
 exports.default = {
     name: 'Snap',
@@ -22,7 +23,7 @@ exports.default = {
     parameters: [{
             name: 'Count',
             type: 'INTEGER',
-            description: 'Number of users to remove (0 for all).'
+            description: 'Number of users to remove (0 or empty for all).'
         }],
     executor: invoke
 };
