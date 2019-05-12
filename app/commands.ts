@@ -27,9 +27,9 @@ export function hasPermission(member: GuildMember, perm: Permission): boolean {
         if (perm === 'MANAGE_BOT')
             return member.id in config.bot['bot manager ids'];
         else if (perm === 'HAS_ADMIN_ROLE')
-            if (!(member.guild.id in config.bot['admin roles (guild:[channel])']))
+            if (!(member.guild.id in config.bot['admin roles']))
                 return false;
-            else return Object.keys(config.bot['admin roles (guild:[channel])'])
+            else return Object.keys(config.bot['admin roles'])
                 .some(id => member.roles.has(id));
         return member.hasPermission(perm);
     } else {
