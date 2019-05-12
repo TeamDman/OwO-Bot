@@ -16,7 +16,7 @@ Example:\
 `OwO tasks list`\
 `OwO tasks start <taskname>`\
 `OwO tasks stop <taskname>`\
-The `list`/`start`/`stop` would be considered the 'route', and `<taskname>` would be the parameters for the `starts` and `stop` route.
+The `list`/`start`/`stop` would be considered the 'route', and `<taskname>` would be the parameters for the `start` and `stop` route.
 
 ## Tasks
 Tasks are individual `.ts` files located in `/app/tasks/`.\
