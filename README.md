@@ -26,10 +26,10 @@ Run `npm install` to download required dependencies.
 
 ### Development
 The bot is written in typescript. This means that when you change one of the `.ts` files, you have to recompile using the `tsc` command.\
-you can use `tsc --watch` to have it automatically rebuild when it detects a file change.\
+You can use `tsc --watch` to have it automatically rebuild when it detects a file change.\
 If you don't want to install typescript globally (`npm -i typescript -g`) for the `tsc` command, you can:
 - `npm run build`
-- Run the typescript compiler manually `node node_modules/typescript/bin/tsc`
+- Run the typescript compiler manually, `node node_modules/typescript/bin/tsc`
 
 ### Running
 Run the bot with either:
