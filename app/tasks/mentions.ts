@@ -2,7 +2,7 @@ import {Message, RichEmbed, User} from 'discord.js';
 import {ListenerTask}             from '../tasks';
 import {Task}                     from '../index';
 import {hasAdminRole}             from '../commands';
-import {report}                   from '../logger';
+import {report, warn}             from '../logger';
 import config                     from '../config';
 
 async function handle(message: Message) {
@@ -36,17 +36,19 @@ async function handle(message: Message) {
         collector.stop('banned');
         await display.edit(embed.setFooter('Member was banned.'));
         message.author.send(config['anti-mention']['dm message']).catch(e => console.error(e));
-        let banCount = 0;
+        let banCount     = 0;
         let hackBanCount = 0;
         for (const guild of Object.keys(config['anti-mention']['whitelist'])) {
             if (message.client.guilds.has(guild)) {
+                const has = message.client.guilds.get(guild).members.has(message.member.id) ? 1 : 0;
                 try {
                     hackBanCount++;
-                    banCount += message.client.guilds.get(guild).members.has(message.member.id)?1:0;
+                    banCount += has;
                     await message.client.guilds.get(guild).ban(message.member, {reason: config['anti-mention']['ban reason']});
                 } catch (e) {
                     hackBanCount--;
-                    banCount--;
+                    banCount -= has;
+                    warn(`Failed to ban ${message.member} in guild ${message.client.guilds.get(guild).name}.`);
                 }
             }
         }
