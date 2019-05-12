@@ -1,6 +1,5 @@
-import {Channel, Guild, GuildChannel, GuildMember, Message, Role, TextChannel} from 'discord.js';
-import * as logger                                                             from './logger';
-import config                                                                  from './config';
+import {Guild, GuildMember, Message, Role, TextChannel} from 'discord.js';
+import * as logger                                      from './logger';
 
 export function getRole(context: Guild, identifier: string): Role {
     for (let role of context.roles.values())
@@ -21,7 +20,6 @@ export function getChannel(context: Guild, identifier: string): TextChannel {
             return channel as any;
     return null;
 }
-
 
 
 export function getMember(context: Guild, identifier: string): GuildMember {
