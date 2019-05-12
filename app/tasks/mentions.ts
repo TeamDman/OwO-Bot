@@ -59,7 +59,11 @@ async function handle(message: Message) {
     });
 }
 
-export default new ListenerTask('Mentions', {
-    'message':       handle,
-    'messageUpdate': (original: Message, updated: Message) => handle(updated)
+export default new ListenerTask({
+    name:        'Mentions',
+    description: 'Performs actions when certain mentions are detected.',
+    listeners:   {
+        'message':       handle,
+        'messageUpdate': (original: Message, updated: Message) => handle(updated)
+    }
 }) as Task;
