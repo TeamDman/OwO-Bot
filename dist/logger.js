@@ -35,6 +35,14 @@ function report(context, content) {
     });
 }
 exports.report = report;
+function warn(text) {
+    if (text === null)
+        return;
+    let s = augment(`[WARNING] ${text}`);
+    process.stdout.write(s);
+    stream.write(s);
+}
+exports.warn = warn;
 function error(text) {
     if (text === null)
         return;

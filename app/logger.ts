@@ -27,6 +27,13 @@ export async function report(context: Guild, content: MessageContent): Promise<v
     await channel.send(content);
 }
 
+export function warn(text: string): void {
+    if (text === null) return;
+    let s = augment(`[WARNING] ${text}`);
+    process.stdout.write(s);
+    stream.write(s);
+}
+
 export function error(text: string): void {
     if (text === null) return;
     let s = augment(`[ERROR] ${text}`);

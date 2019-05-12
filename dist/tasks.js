@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const logger = require("./logger");
+const logger_1 = require("./logger");
 const taskList = [];
 function getTasks() {
     return taskList;
@@ -22,7 +23,12 @@ function refreshTasks() {
         if (!file.endsWith('.js'))
             continue;
         delete require.cache[require.resolve(`./tasks/${file}`)];
-        taskList.push(require(`./tasks/${file}`).default);
+        let task = require(`./tasks/${file}`).default;
+        if (task.name === undefined || task.description === undefined) {
+            logger_1.warn('Task name and description must not be null, skipping.');
+            continue;
+        }
+        taskList.push();
     }
 }
 exports.refreshTasks = refreshTasks;
@@ -70,27 +76,29 @@ function stopTask(client, identifier) {
     });
 }
 exports.stopTask = stopTask;
-function ListenerTask(name, listeners) {
-    let running = false;
-    this.name = name;
-    this.allowConcurrent = false;
-    this.autoStart = true;
+function ListenerTask(properties = {
+    allowConcurrent: false,
+    autoStart: true
+}) {
+    for (const [key, value] of Object.entries(properties))
+        if (key !== 'listeners')
+            this[key] = value;
     this.start = (client) => {
-        if (running)
+        if (this.runningCount === 1)
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`${name} task is already running.`);
-        for (let key of Object.keys(listeners)) {
-            client.addListener(key, listeners[key]);
+        for (const [key, value] of Object.entries(properties.listeners)) {
+            client.addListener(key, value);
         }
-        running = true;
+        this.runningCount = 1;
         return new discord_js_1.RichEmbed().setColor('GREEN').setDescription(`${name} task has been started.`);
     };
     this.stop = (client) => {
-        if (!running)
+        if (this.runningCount === 0)
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`${name} task is not running.`);
-        for (let key of Object.keys(listeners)) {
-            client.removeListener(key, listeners[key]);
+        for (const [key, value] of Object.entries(properties.listeners)) {
+            client.removeListener(key, value);
         }
-        running = false;
+        this.runningCount = 0;
         return new discord_js_1.RichEmbed().setColor('GREEN').setDescription(`${name} task has been stopped.`);
     };
 }

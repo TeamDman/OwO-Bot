@@ -54,11 +54,15 @@ export type ParameterizedCommandExecutor = (message: Message, args: any[]) => Pr
 export type Command = SimpleCommand | RoutedCommand | ParameterizedCommand
 export type CommandExecutor = RoutedCommandExecutor | ParameterizedCommandExecutor
 
-export interface Task {
+export interface TaskProperties {
     name: string,
     description: string,
-    allowConcurrent: boolean,
-    autoStart: boolean,
+    allowConcurrent?: boolean,
+    autoStart?: boolean,
+}
+
+export interface Task extends TaskProperties {
     start: (client:Client) => MessageContent,
-    stop?: (client:Client) => MessageContent
+    stop?: (client:Client) => MessageContent,
+    runningCount: number
 }
