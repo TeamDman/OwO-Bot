@@ -1,6 +1,6 @@
-import {Client, RichEmbed} from 'discord.js';
-import * as logger from './logger';
-import {warn} from './logger';
+import {Client, RichEmbed}                    from 'discord.js';
+import * as logger                            from './logger';
+import {warn}                                 from './logger';
 import {MessageContent, Task, TaskProperties} from './index';
 
 const taskList: Task[] = [];
@@ -20,7 +20,7 @@ export function refreshTasks(): void {
             warn('Task name and description must not be null, skipping.');
             continue;
         }
-        taskList.push();
+        taskList.push(task);
     }
 }
 
@@ -46,7 +46,7 @@ export async function startTask(client: Client, identifier: string): Promise<Mes
     try {
         return await task.start(client);
     } catch (error) {
-        return new RichEmbed().setColor('ORANGE').setDescription(error);
+        return new RichEmbed().setColor('ORANGE').setDescription(`Error starting task ${identifier}: ${error}`);
     }
 }
 
@@ -57,33 +57,37 @@ export async function stopTask(client: Client, identifier: string): Promise<Mess
     try {
         return await task.stop(client);
     } catch (error) {
-        return new RichEmbed().setColor('ORANGE').setDescription(error);
+        return new RichEmbed().setColor('ORANGE').setDescription(`Error stopping task ${identifier}: ${error}`);
     }
 }
 
-export function ListenerTask(properties: { listeners: { [index: string]: (...args: any) => void } } & TaskProperties = {
-    allowConcurrent: false,
-    autoStart:       true
-} as any): void {
+export function ListenerTask(properties: { listeners: { [index: string]: (...args: any) => void } } & TaskProperties): void {
     for (const [key, value] of Object.entries(properties))
         if (key !== 'listeners')
             this[key] = value;
-    this.start = (client: Client): MessageContent => {
+
+    //set defaults
+    for (const [key, value] of Object.entries({allowConcurrent: false, autoStart: true}))
+        if (this[key] === undefined)
+            this[key]=value;
+
+    this.runningCount = 0;
+    this.start        = (client: Client): MessageContent => {
         if (this.runningCount === 1)
-            return new RichEmbed().setColor('ORANGE').setDescription(`${name} task is already running.`);
+            return new RichEmbed().setColor('ORANGE').setDescription(`${properties.name} task is already running.`);
         for (const [key, value] of Object.entries(properties.listeners)) {
             client.addListener(key, value);
         }
         this.runningCount = 1;
-        return new RichEmbed().setColor('GREEN').setDescription(`${name} task has been started.`);
+        return new RichEmbed().setColor('GREEN').setDescription(`${properties.name} task has been started.`);
     };
-    this.stop  = (client: Client): MessageContent => {
+    this.stop         = (client: Client): MessageContent => {
         if (this.runningCount === 0)
-            return new RichEmbed().setColor('ORANGE').setDescription(`${name} task is not running.`);
+            return new RichEmbed().setColor('ORANGE').setDescription(`${properties.name} task is not running.`);
         for (const [key, value] of Object.entries(properties.listeners)) {
             client.removeListener(key, value);
         }
         this.runningCount = 0;
-        return new RichEmbed().setColor('GREEN').setDescription(`${name} task has been stopped.`);
+        return new RichEmbed().setColor('GREEN').setDescription(`${properties.name} task has been stopped.`);
     };
 }
