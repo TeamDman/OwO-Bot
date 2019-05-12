@@ -1,15 +1,15 @@
 import {Message, RichEmbed, User} from 'discord.js';
 import {ListenerTask}             from '../tasks';
 import {Task}                     from '../index';
-import {hasPermission}            from '../commands';
+import {hasAdminRole}             from '../commands';
 import {report}                   from '../logger';
 import config                     from '../config';
 
 async function handle(message: Message) {
     if (message.author.bot) return false;
-    if (!message.content.match(config['anti-mention']['match']))
-        return;
-    if (hasPermission(message.member, 'HAS_ADMIN_ROLE'))
+    if (!(message.guild.id in config['anti-mention']['whitelist'])) return;
+    if (!message.content.match(config['anti-mention']['match'])) return;
+    if (hasAdminRole(message.member))
         return message.channel.send('👀').catch(e => console.error(e));
 
     await report(message.guild, new RichEmbed()
@@ -36,16 +36,29 @@ async function handle(message: Message) {
         collector.stop('banned');
         await display.edit(embed.setFooter('Member was banned.'));
         message.author.send(config['anti-mention']['dm message']).catch(e => console.error(e));
-        message.guild.ban(message.member, {reason: config['anti-mention']['ban reason']}).catch(e => console.error(e));
+        let banCount = 0;
+        let hackBanCount = 0;
+        for (const guild of Object.keys(config['anti-mention']['whitelist'])) {
+            if (message.client.guilds.has(guild)) {
+                try {
+                    hackBanCount++;
+                    banCount += message.client.guilds.get(guild).members.has(message.member.id)?1:0;
+                    await message.client.guilds.get(guild).ban(message.member, {reason: config['anti-mention']['ban reason']});
+                } catch (e) {
+                    hackBanCount--;
+                    banCount--;
+                }
+            }
+        }
         display.clearReactions().catch(e => console.error(e));
         await report(message.guild, new RichEmbed()
             .setColor('RED')
-            .setDescription(`${message.author} was banned for mentioning Rei.`));
+            .setDescription(`${message.author} was banned from [${banCount}] guilds and pre-banned from [${hackBanCount}] guilds for mentioning Rei.`));
     }, 1000);
 
     let collector = display.createReactionCollector((react, user) =>
         user.id !== message.client.user.id &&
-        hasPermission(message.guild.members.get(user.id), 'HAS_ADMIN_ROLE') &&
+        hasAdminRole(message.guild.members.get(user.id)) &&
         react.emoji.name === '✅'
     ).on('collect', async () => {
         clearInterval(hook);

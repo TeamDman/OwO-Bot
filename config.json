@@ -94,6 +94,13 @@
             "_comment": "[Shinobu Cafe]:[ShinoSilence]",
             "381386573830160396": "478360461817937921"
         },
+        "whitelist": {
+            "_comment": "cafe",
+            "381386573830160396": 1,
+            "_comment": "alter",
+            "389461982832623619": 1
+
+        },
         "countdown": 10,
         "ban reason": "Pinged rei .-.",
         "dm message": "You were banned from Shinobu Cafe for breaking the rules.",

@@ -20,6 +20,10 @@ export function init() {
     });
 }
 
+export function hasAdminRole(member: GuildMember): boolean {
+    return member.guild.id in config.bot['admin roles'] && Object.keys(config.bot['admin roles'][member.guild.id]).some(role => member.roles.has(role));
+}
+
 export function hasPermissions(member: GuildMember, perms: Permission[]) {
     if (member.id in config.bot['bot manager ids'] && member.client.user.id in config.bot['dev bot ids'])
         return true;
