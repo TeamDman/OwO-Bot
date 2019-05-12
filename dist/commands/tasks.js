@@ -13,7 +13,7 @@ const discord_js_1 = require("discord.js");
 const invoke = ((message, route, args) => __awaiter(this, void 0, void 0, function* () {
     switch (route) {
         case 'list':
-            return new discord_js_1.RichEmbed().setTitle('Tasks').setDescription(tasks.getTasks().map(t => `${t.name}: ${t.description}`).join('\n'));
+            return new discord_js_1.RichEmbed().setTitle('Tasks').setDescription(tasks.getTasks().map(t => `${t.name}: ${t.description} (${t.runningCount} running)`).join('\n'));
         case 'start':
             return tasks.startTask(message.client, args.shift());
         case 'stop':
