@@ -52,7 +52,7 @@ export function isRouted(c: Command): c is RoutedCommand {
 
 export async function attemptCommand(message: Message, command: Command, content: string): Promise<string | RichEmbed> {
     logger.info(logger.formatMessageToString(message));
-    if (message.channel.type !== 'text')
+    if (message.channel.type !== 'text' && command.requiresGuildContext)
         return `Commands can not be used outside of guilds.`;
     if ((command.permissions || []).some(perm => !hasPermission(message.member, perm)))
         return 'You do not have permissions to use this command.';
@@ -128,7 +128,6 @@ export async function onMessage(message: Message) {
         if (message.channel.type === 'text' && message.guild.id in config.bot['bot usage channel whitelists (guild:{channel})'] && !(message.channel.id in config.bot['bot usage channel whitelists (guild:{channel})'][message.guild.id])) return;
         if (message.channel.type !== 'text') logger.info(logger.formatMessageToString(message));
         if (message.content.match(config.bot.prefix) === null) return;
-        if (message.channel.type !== 'text') return await message.channel.send('Commands can not be used outside of guilds.');
 
         let tokens = message.content.substr(message.content.match(config.bot.prefix).index + config.bot.prefix.length + 1).split(' ');
         let cmd    = tokens.shift().trim();
