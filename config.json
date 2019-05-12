@@ -5,6 +5,8 @@
         "presence": "nothing",
         "presence type": 0,
         "dev bot ids": {
+            "_comment": "Used to calculate permissions for dev instance.",
+            "_comment": "bot manager has permissions for everything when the bot id is a dev bot",
             "_comment": "OwO",
             "431980306111660062": 1
         },
