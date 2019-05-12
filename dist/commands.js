@@ -45,7 +45,7 @@ function hasPermissions(member, perms) {
                     return false;
             }
         }
-        else if (perm.roles.some(r => !member.roles.has(r)))
+        else if (Object.values(perm.roles).some(r => !member.roles.has(r)))
             return false;
     }
     return;

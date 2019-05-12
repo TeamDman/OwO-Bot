@@ -35,7 +35,7 @@ export function hasPermissions(member: GuildMember, perms: Permission[]) {
                 if (!Object.entries(config.bot['admin roles'][member.guild.id]).some(([id, perms]) => member.roles.has(id) && perm in perms && perms[perm as string] !== 0))
                     return false;
             }
-        } else if ((perm as { roles: [string] }).roles.some(r => !member.roles.has(r)))
+        } else if (Object.values((perm as { roles: [string] }).roles).some(r => !member.roles.has(r)))
             return false;
     }
     return;
