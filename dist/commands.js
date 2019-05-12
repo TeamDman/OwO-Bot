@@ -28,25 +28,29 @@ function init() {
     });
 }
 exports.init = init;
-function hasPermission(member, perm) {
+function hasPermissions(member, perms) {
     if (member.id in config_1.default.bot['bot manager ids'] && member.client.user.id in config_1.default.bot['dev bot ids'])
         return true;
-    if (typeof perm === 'string') {
-        if (perm === 'MANAGE_BOT')
-            return member.id in config_1.default.bot['bot manager ids'];
-        else if (perm === 'HAS_ADMIN_ROLE')
-            if (!(member.guild.id in config_1.default.bot['admin roles']))
-                return false;
-            else
-                return Object.keys(config_1.default.bot['admin roles'])
-                    .some(id => member.roles.has(id));
-        return member.hasPermission(perm);
+    for (let perm of perms) {
+        if (typeof perm === 'string') {
+            if (perm === 'MANAGE_BOT') {
+                if (!(member.id in config_1.default.bot['bot manager ids'])) {
+                    return false;
+                }
+            }
+            else if (!member.hasPermission(perm)) {
+                if (!(member.guild.id in config_1.default.bot['admin roles']))
+                    return false;
+                if (!Object.entries(config_1.default.bot['admin roles'][member.guild.id]).some(([id, perms]) => member.roles.has(id) && perm in perms && perms[perm] !== 0))
+                    return false;
+            }
+        }
+        else if (perm.roles.some(r => !member.roles.has(r)))
+            return false;
     }
-    else {
-        return perm.roles.some(r => member.roles.has(r));
-    }
+    return;
 }
-exports.hasPermission = hasPermission;
+exports.hasPermissions = hasPermissions;
 function isSimple(c) {
     return !isParameterized(c) && !isRouted(c);
 }
@@ -64,7 +68,7 @@ function attemptCommand(message, command, content) {
         logger.info(logger.formatMessageToString(message));
         if (message.channel.type !== 'text' && command.requiresGuildContext)
             return `Commands can not be used outside of guilds.`;
-        if ((command.permissions || []).some(perm => !hasPermission(message.member, perm)))
+        if (!hasPermissions(message.member, (command.permissions || [])))
             return 'You do not have permissions to use this command.';
         let args = content.match(/\\?.|^$/g).reduce((p, c) => {
             if (c === '"') {
@@ -81,19 +85,19 @@ function attemptCommand(message, command, content) {
         let params;
         let route;
         if (isSimple(command)) {
-            return yield command.executor.call(null, [message]);
+            return yield command.executor.call(null, message);
         }
         else if (isRouted(command)) {
             route = args.shift().trim().toLowerCase();
             if (!(route in command.routes))
                 return `Unknown route ${route} for command ${command.name}`;
+            if (!hasPermissions(message.member, command.routes[route].permissions || []))
+                return `You do not have permissions to use this route.`;
             params = command.routes[route].parameters || [];
         }
         else if (isParameterized(command)) {
             params = command.parameters;
         }
-        if (params.some(param => (param.permissions || []).some(perm => !hasPermission(message.member, perm))))
-            return `You do not have permission to use this command.`;
         if (args.length < params.length)
             return `Only ${args.length} arguments found, expected ${params.length}`;
         args = [...args.slice(0, params.length - 1), args.slice(params.length - 1).join(' ')];

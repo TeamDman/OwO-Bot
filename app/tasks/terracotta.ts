@@ -1,5 +1,5 @@
 import {Client, Message, MessageAttachment, MessageEmbed, RichEmbed} from 'discord.js';
-import {CommandResult, Task}                                         from '../index';
+import {MessageContent, Task}                                         from '../index';
 import * as logger                                                   from '../logger';
 import config                                                        from '../config';
 
@@ -14,7 +14,7 @@ const listeners =  {
 };
 let running:boolean = false;
 
-function start(client: Client): CommandResult {
+function start(client: Client): MessageContent {
     if (running)
         return new RichEmbed().setColor('ORANGE').setDescription('Terracotta task is already running.');
     for (let key of Object.keys(listeners)) {
@@ -25,7 +25,7 @@ function start(client: Client): CommandResult {
     return new RichEmbed().setColor('GREEN').setDescription('Terracotta task has been started.');
 }
 
-function stop(client: Client): CommandResult {
+function stop(client: Client): MessageContent {
     if (!running)
         return new RichEmbed().setColor('ORANGE').setDescription('Terracotta task is not running.');
     for (let key of Object.keys(listeners)) {
