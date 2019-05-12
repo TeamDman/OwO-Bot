@@ -5,7 +5,7 @@ import {RichEmbed}                from 'discord.js';
 const invoke: CommandExecutor = (async (message, route, args) => {
     switch (route) {
         case 'list':
-            return new RichEmbed().setTitle('Tasks').setDescription(tasks.getTasks().map(t => `${t.name}: ${t.description}`).join('\n'));
+            return new RichEmbed().setTitle('Tasks').setDescription(tasks.getTasks().map(t => `${t.name}: ${t.description} (${t.runningCount} running)`).join('\n'));
         case 'start':
             return tasks.startTask(message.client, args.shift());
         case 'stop':
