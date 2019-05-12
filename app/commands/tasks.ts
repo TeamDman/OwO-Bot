@@ -17,6 +17,7 @@ export default {
     name:     'Tasks',
     commands: ['tasks', 'task'],
     description: 'Manages available tasks.',
+    permissions: ['MANAGE_BOT'],
     routes:   {
         'list':  {
             name: 'List Tasks',

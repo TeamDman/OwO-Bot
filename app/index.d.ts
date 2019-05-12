@@ -9,7 +9,7 @@ export type ParameterType =
     | 'INTEGER'
     | 'DECIMAL';
 
-export type Permission = PermissionString | 'MANAGE_BOT' | 'HAS_ADMIN_ROLE' | { roles: [string] };
+export type Permission = PermissionString | 'MANAGE_BOT' | { roles: [string] };
 
 export interface Parameter {
     name?: string;
@@ -28,7 +28,7 @@ export interface CommandBase {
     name: string;
     commands: string[];
     description?: string;
-    permissions?: Permission[];
+    permissions?: 'HAS_ADMIN_ROLE' | Permission[];
     requiresGuildContext?: boolean;
 }
 
