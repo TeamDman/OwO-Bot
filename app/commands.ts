@@ -20,17 +20,27 @@ export function init() {
     });
 }
 
-export function hasPermission(member: GuildMember, perm: Permission): boolean {
+export function hasPermissions(member: GuildMember, perms: Permission[]) {
     if (member.id in config.bot['bot manager ids'] && member.client.user.id in config.bot['dev bot ids'])
         return true;
-    if (typeof perm === 'string') {
-        if (perm === 'MANAGE_BOT')
-            return member.id in config.bot['bot manager ids'];
-        return member.hasPermission(perm);
-    } else {
-        return (perm as { roles: [string] }).roles.some(r => member.roles.has(r));
+    for (let perm of perms) {
+        if (typeof perm === 'string') {
+            if (perm === 'MANAGE_BOT') {
+                if (!(member.id in config.bot['bot manager ids'])) {
+                    return false;
+                }
+            } else if (!member.hasPermission(perm)) {
+                if (!(member.guild.id in config.bot['admin roles']))
+                    return false;
+                if (!Object.entries(config.bot['admin roles'][member.guild.id]).some(([id, perms]) => member.roles.has(id) && perm in perms && perms[perm as string] !== 0))
+                    return false;
+            }
+        } else if ((perm as { roles: [string] }).roles.some(r => !member.roles.has(r)))
+            return false;
     }
+    return;
 }
+
 
 export function isSimple(c: Command): c is SimpleCommand {
     return !isParameterized(c) && !isRouted(c);
@@ -49,17 +59,7 @@ export async function attemptCommand(message: Message, command: Command, content
     logger.info(logger.formatMessageToString(message));
     if (message.channel.type !== 'text' && command.requiresGuildContext)
         return `Commands can not be used outside of guilds.`;
-    if (
-        typeof command.permissions === 'string'
-            ? (
-                (
-                    !(message.guild.id in config.bot['admin roles'])
-                    || !Object.keys(config.bot['admin roles'])
-                        .some(id => message.member.roles.has(id))
-                )
-            )
-            : (command.permissions || []).some(perm => !hasPermission(message.member, perm))
-    )
+    if (!hasPermissions(message.member, (command.permissions || [])))
         return 'You do not have permissions to use this command.';
     let args = content.match(/\\?.|^$/g).reduce((p: any, c: any) => {
         if (c === '"') {
@@ -74,17 +74,17 @@ export async function attemptCommand(message: Message, command: Command, content
     let params: Parameter[];
     let route;
     if (isSimple(command)) {
-        return await command.executor.call(null, [message]);
+        return await command.executor.call(null, message);
     } else if (isRouted(command)) {
         route = args.shift().trim().toLowerCase();
         if (!(route in command.routes))
             return `Unknown route ${route} for command ${command.name}`;
+        if (!hasPermissions(message.member, command.routes[route].permissions || []))
+            return `You do not have permissions to use this route.`;
         params = command.routes[route].parameters || [];
     } else if (isParameterized(command)) {
         params = command.parameters;
     }
-    if (params.some(param => (param.permissions || []).some(perm => !hasPermission(message.member, perm))))
-        return `You do not have permission to use this command.`;
 
     if (args.length < params.length)
         return `Only ${args.length} arguments found, expected ${params.length}`;
