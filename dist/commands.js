@@ -62,7 +62,7 @@ exports.isRouted = isRouted;
 function attemptCommand(message, command, content) {
     return __awaiter(this, void 0, void 0, function* () {
         logger.info(logger.formatMessageToString(message));
-        if (message.channel.type !== 'text' && (command.permissions || []).some(p => p !== 'MANAGE_BOT'))
+        if (message.channel.type !== 'text' && command.requiresGuildContext)
             return `Commands can not be used outside of guilds.`;
         if ((command.permissions || []).some(perm => !hasPermission(message.member, perm)))
             return 'You do not have permissions to use this command.';
