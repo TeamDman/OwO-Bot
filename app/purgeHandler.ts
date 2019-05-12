@@ -1,6 +1,6 @@
-import {Collection, Guild, GuildChannel, GuildMember, Message, Snowflake, TextChannel} from 'discord.js';
-import config                                                                          from './config';
-import {info, report}                                                                  from './logger';
+import {GuildMember, Message, TextChannel} from 'discord.js';
+import config                              from './config';
+import {info, report}                      from './logger';
 
 let purging: boolean = false;
 
@@ -17,19 +17,19 @@ export function shouldPurge(member: GuildMember): boolean {
 
 export async function startPurge(context: TextChannel, count: number): Promise<void> {
     if (purging)
-        throw new Error("Already purging.");
-    let toPurge = context.guild.members
+        throw new Error('Already purging.');
+    let toPurge    = context.guild.members
         .filter(shouldPurge)
         .array()
         .filter((_, index) => index < count);
     let startCount = toPurge.length;
     info(`Purging ${startCount} members in ${context.guild.name}`);
-    let startTime = Date.now();
-    purging = true;
+    let startTime       = Date.now();
+    purging             = true;
     let progressMessage = await context.send('Purging...') as Message;
-    let reportText    = '';
+    let reportText      = '';
     await report(context.guild, 'Snapped members:');
-    let i=0;
+    let i = 0;
     for (; purging && toPurge.length > 0; i++) {
         let member = toPurge.pop();
         try {
