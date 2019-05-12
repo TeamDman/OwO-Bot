@@ -53,10 +53,9 @@ function startPurge(context, count) {
                 reportText = '';
             }
         }
-        yield progressMessage.edit('Purging... 100%');
         yield context.send(`Purged ${i} members in ${Math.floor((Date.now() - startTime) / 1000)} seconds.`);
         purging = false;
-        console.log(`Purge complete, purged ${startCount} members.`);
+        console.log(`Purge complete, purged ${i} members.`);
     });
 }
 exports.startPurge = startPurge;

@@ -44,10 +44,9 @@ export async function startPurge(context: TextChannel, count: number): Promise<v
             reportText = '';
         }
     }
-    await progressMessage.edit('Purging... 100%');
     await context.send(`Purged ${i} members in ${Math.floor((Date.now() - startTime) / 1000)} seconds.`);
     purging = false;
-    console.log(`Purge complete, purged ${startCount} members.`);
+    console.log(`Purge complete, purged ${i} members.`);
 }
 
 export async function purgeMember(member: GuildMember): Promise<void> {
