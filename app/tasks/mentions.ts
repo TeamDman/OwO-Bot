@@ -14,9 +14,10 @@ function getRandomText(user: User): string {
 
 async function handle(message: Message) {
     if (message.author.bot) return false;
-    if (message.content.match(config['anti-mention']['match']))
-        if (hasPermission(message.member, 'HAS_ADMIN_ROLE'))
-            return message.channel.send('👀').catch(e => console.error(e));
+    if (!message.content.match(config['anti-mention']['match']))
+        return;
+    if (hasPermission(message.member, 'HAS_ADMIN_ROLE'))
+        return message.channel.send('👀').catch(e => console.error(e));
 
     await report(message.guild, new RichEmbed()
         .setTitle('Rei Mention Notice')

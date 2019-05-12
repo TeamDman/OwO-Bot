@@ -49,7 +49,8 @@
     },
     "anti-mention": {
         "_comment": "@Rei#0001",
-        "match": "<@!?129439015849033728>",
+        "_match": "<@!?129439015849033728>",
+        "match": "<@!?159018622600216577>",
         "countdown": 10,
         "ban reason": "Pinged rei .-.",
         "fun texts": [
