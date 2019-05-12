@@ -5,34 +5,72 @@
         "presence": "nothing",
         "presence type": 0,
         "dev bot ids": {
+            "_comment": "Used to calculate permissions for dev instance.",
+            "_comment": "bot manager has permissions for everything when the bot id is a dev bot",
             "_comment": "OwO",
             "431980306111660062": 1
         },
         "bot manager ids": {
             "_comment": "For whoever hosts the bot.",
-            "__comment": "Some operations are dangerous, like `eval` command.",
-            "___comment": "@Teamy#9201",
+            "_comment": "Some operations are dangerous, like `eval` command.",
+            "_comment": "@Teamy#9201",
             "159018622600216577": 1
         },
-        "bot usage channel whitelists (guild:{channel})": {
+        "bot usage channel whitelists": {
+            "_comment": "Any guild with an entry here has the bot usage restricted to the listed channels.",
+            "_comment": "Missing entry for a guild means all channels will work.",
             "_comment": "Shinobu Cafe",
             "381386573830160396": {
                 "_comment": "#developers-talk",
                 "452530315630477333": 1
             }
         },
-        "bot logger report channels (guild:channel)": {
+        "bot logger report channels": {
             "_comment": "For logging that isn't to console.",
-            "__comment": "[Shinobu Cafe]:[#developers-talk]",
+            "_comment": "[Shinobu Cafe]:[#developers-talk]",
             "381386573830160396": "452530315630477333"
         },
-        "admin roles (guild:{channel})": {
+        "admin roles": {
             "_comment": "Some guilds use bots to manage, so checking perms isn't viable.",
-            "__comment": "This option allows for custom admin roles to be used.",
-            "___comment": "Shinobu Cafe",
+            "_comment": "This option allows for custom admin roles to be interpreted as having other permissions",
+            "_comment": "See https://discord.js.org/#/docs/main/stable/class/Permissions?scrollTo=s-FLAGS for a full list",
+            "_comment": "Shinobu Cafe",
             "381386573830160396": {
                 "_comment": "Supreme Beings",
-                "383961248888258561": 1
+                "383961248888258561": {
+                    "ADMINISTRATOR": 0,
+                    "CREATE_INSTANT_INVITE": 1,
+                    "KICK_MEMBERS": 1,
+                    "BAN_MEMBERS": 1,
+                    "MANAGE_CHANNELS": 1,
+                    "MANAGE_GUILD": 1,
+                    "ADD_REACTIONS": 1,
+                    "VIEW_AUDIT_LOG": 1,
+                    "PRIORITY_SPEAKER": 1,
+                    "VIEW_CHANNEL": 1,
+                    "READ_MESSAGES": 1,
+                    "SEND_MESSAGES": 1,
+                    "SEND_TTS_MESSAGES": 1,
+                    "MANAGE_MESSAGES": 1,
+                    "EMBED_LINKS": 1,
+                    "ATTACH_FILES": 1,
+                    "READ_MESSAGE_HISTORY": 1,
+                    "MENTION_EVERYONE": 1,
+                    "USE_EXTERNAL_EMOJIS": 1,
+                    "EXTERNAL_EMOJIS": 1,
+                    "CONNECT": 1,
+                    "SPEAK": 1,
+                    "MUTE_MEMBERS": 1,
+                    "DEAFEN_MEMBERS": 1,
+                    "MOVE_MEMBERS": 1,
+                    "USE_VAD": 1,
+                    "CHANGE_NICKNAME": 1,
+                    "MANAGE_NICKNAMES": 1,
+                    "MANAGE_ROLES": 1,
+                    "MANAGE_ROLES_OR_PERMISSIONS": 1,
+                    "MANAGE_WEBHOOKS": 1,
+                    "MANAGE_EMOJIS": 1
+                }
             }
         }
     }

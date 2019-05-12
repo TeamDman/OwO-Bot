@@ -1,19 +1,19 @@
 import {Command, CommandExecutor} from '../index';
-import {RichEmbed}                from "discord.js";
+import {RichEmbed}                from 'discord.js';
 
 const invoke: CommandExecutor = async (message, args) => {
     let member = args.shift();
-    await member.kick(args.shift());
+    await member.ban(args.shift());
     return new RichEmbed()
-        .setColor('ORANGE')
+        .setColor('RED')
         .setDescription(`Banned ${member.user} (${member.user.id}).`);
 };
 
 export default {
-    name:        'Kick',
-    commands:    ['kick'],
-    description: 'Kicks a user from the guild.',
-    permissions: ['KICK_MEMBERS'],
+    name:        'Ban',
+    commands:    ['ban'],
+    description: 'Bans a user from the guild.',
+    permissions: ['BAN_MEMBERS'],
     parameters:  [
         {
             name: 'Member',

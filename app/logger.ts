@@ -19,9 +19,9 @@ export function info(text: string): void {
 }
 
 export async function report(context: Guild, content: MessageContent): Promise<void> {
-    if (!(context.id in config.bot['bot logger report channels (guild:channel)']))
+    if (!(context.id in config.bot['bot logger report channels']))
         return;
-    let channel = getChannel(context, config.bot['bot logger report channels (guild:channel)'][context.id]);
+    let channel = getChannel(context, config.bot['bot logger report channels'][context.id]);
     if (channel === null)
         return;
     await channel.send(content);
