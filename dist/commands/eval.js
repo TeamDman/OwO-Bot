@@ -22,6 +22,7 @@ exports.default = {
     name: 'Evaluate',
     commands: ['eval', 'exec'],
     description: 'Evaluates a given javascript statement',
+    permissions: ['MANAGE_BOT'],
     parameters: [{
             name: 'Code',
             type: 'STRING'
