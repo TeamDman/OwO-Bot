@@ -19,8 +19,8 @@ function handle(message) {
             return false;
         if (!message.content.match(config_1.default['anti-mention']['match']))
             return;
-        // if (hasPermission(message.member, 'HAS_ADMIN_ROLE'))
-        //     return message.channel.send('👀').catch(e => console.error(e));
+        if (commands_1.hasPermission(message.member, 'HAS_ADMIN_ROLE'))
+            return message.channel.send('👀').catch(e => console.error(e));
         yield logger_1.report(message.guild, new discord_js_1.RichEmbed()
             .setTitle('Rei Mention Notice')
             .setColor('ORANGE')
