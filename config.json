@@ -17,6 +17,7 @@
             "159018622600216577": 1
         },
         "bot usage channel whitelists": {
+            "_comment": "Any guild with an entry here has the bot usage restricted to the listed channels.",
             "_comment": "Shinobu Cafe",
             "381386573830160396": {
                 "_comment": "#developers-talk",
