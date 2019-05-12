@@ -116,10 +116,11 @@ export async function hackBan(client:Client, identifier: string, reason:string):
     let hackBanCount = 0;
     for (const [, guild] of client.guilds) {
         try {
-            hackBanCount += guild.members.has(identifier)?1:0;
+            banCount += guild.members.has(identifier)?1:0;
+            hackBanCount++;
             await guild.ban(identifier, reason);
-            banCount++;
         } catch (e) {
+            banCount--;
             hackBanCount--;
             warn(`Failed to ban ${identifier} in guild ${guild.name}. ${e}`);
         }
