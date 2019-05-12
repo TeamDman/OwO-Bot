@@ -146,7 +146,7 @@ function onMessage(message) {
         try {
             if (message.author.bot)
                 return;
-            if (message.channel.type === 'text' && message.guild.id in config_1.default.bot['bot usage channel whitelists (guild:{channel})'] && !(message.channel.id in config_1.default.bot['bot usage channel whitelists (guild:{channel})'][message.guild.id]))
+            if (message.channel.type === 'text' && message.guild.id in config_1.default.bot['bot usage channel whitelists'] && !(message.channel.id in config_1.default.bot['bot usage channel whitelists'][message.guild.id]))
                 return;
             if (message.channel.type !== 'text')
                 logger.info(logger.formatMessageToString(message));
