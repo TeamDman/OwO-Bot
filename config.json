@@ -53,6 +53,7 @@
         "match": "<@!?159018622600216577>",
         "countdown": 10,
         "ban reason": "Pinged rei .-.",
+        "dm message": "You were banned from Shinobu Cafe for breaking the rules.",
         "fun texts": [
             "{name} has sinned.",
             "{name} feels a menacing presence...",

@@ -13,23 +13,22 @@ const tasks_1 = require("../tasks");
 const commands_1 = require("../commands");
 const logger_1 = require("../logger");
 const config_1 = require("../config");
-function getRandomText(user) {
-    return config_1.default['anti-mention']['fun texts'][Math.floor(Math.random() * config_1.default['anti-mention']['fun texts'].length)].replace('{name}', `<@${user.id}>`);
-}
 function handle(message) {
     return __awaiter(this, void 0, void 0, function* () {
         if (message.author.bot)
             return false;
         if (!message.content.match(config_1.default['anti-mention']['match']))
             return;
-        if (commands_1.hasPermission(message.member, 'HAS_ADMIN_ROLE'))
-            return message.channel.send('👀').catch(e => console.error(e));
+        // if (hasPermission(message.member, 'HAS_ADMIN_ROLE'))
+        //     return message.channel.send('👀').catch(e => console.error(e));
         yield logger_1.report(message.guild, new discord_js_1.RichEmbed()
             .setTitle('Rei Mention Notice')
             .setColor('ORANGE')
-            .addField('User', `${message.author}`)
-            .addField('Guild', `${message.guild.name}`)
-            .addField('Message', message.content));
+            .addField('User', `${message.author}`, true)
+            .addField('Guild', `${message.guild.name}`, true)
+            .addField('Channel', `${message.channel}`, true)
+            .addField('Message', message.content, true)
+            .addField('Message Link', message.url, true));
         let timer = config_1.default['anti-mention'].countdown;
         let embed = new discord_js_1.RichEmbed()
             .setColor('RED')
@@ -42,7 +41,9 @@ function handle(message) {
             if (timer !== 0)
                 return;
             clearInterval(hook);
+            collector.stop('banned');
             yield display.edit(embed.setFooter('Member was banned.'));
+            message.author.send(config_1.default['anti-mention']['dm message']).catch(e => console.error(e));
             message.guild.ban(message.member, { reason: config_1.default['anti-mention']['ban reason'] }).catch(e => console.error(e));
             display.clearReactions().catch(e => console.error(e));
             yield logger_1.report(message.guild, new discord_js_1.RichEmbed()
@@ -62,6 +63,9 @@ function handle(message) {
                 .setDescription(`${message.author} was pardoned.`));
         }));
     });
+}
+function getRandomText(user) {
+    return config_1.default['anti-mention']['fun texts'][Math.floor(Math.random() * config_1.default['anti-mention']['fun texts'].length)].replace('{name}', `<@${user.id}>`);
 }
 exports.default = new tasks_1.ListenerTask({
     name: 'Mentions',

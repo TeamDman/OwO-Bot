@@ -5,26 +5,21 @@ import {hasPermission}            from '../commands';
 import {report}                   from '../logger';
 import config                     from '../config';
 
-function getRandomText(user: User): string {
-    return (
-        config['anti-mention']['fun texts'][
-            Math.floor(Math.random() * config['anti-mention']['fun texts'].length)] as string
-    ).replace('{name}', `<@${user.id}>`);
-}
-
 async function handle(message: Message) {
     if (message.author.bot) return false;
     if (!message.content.match(config['anti-mention']['match']))
         return;
-    if (hasPermission(message.member, 'HAS_ADMIN_ROLE'))
-        return message.channel.send('👀').catch(e => console.error(e));
+    // if (hasPermission(message.member, 'HAS_ADMIN_ROLE'))
+    //     return message.channel.send('👀').catch(e => console.error(e));
 
     await report(message.guild, new RichEmbed()
         .setTitle('Rei Mention Notice')
         .setColor('ORANGE')
-        .addField('User', `${message.author}`)
-        .addField('Guild', `${message.guild.name}`)
-        .addField('Message', message.content));
+        .addField('User', `${message.author}`, true)
+        .addField('Guild', `${message.guild.name}`, true)
+        .addField('Channel', `${message.channel}`, true)
+        .addField('Message', message.content, true)
+        .addField('Message Link', message.url, true));
 
     let timer   = config['anti-mention'].countdown;
     let embed   = new RichEmbed()
@@ -33,11 +28,13 @@ async function handle(message: Message) {
         .setFooter(`${timer} seconds`);
     let display = await message.channel.send(embed) as Message;
     display.react('✅').catch(e => console.error(e));
-    let hook    = setInterval(async () => {
+    let hook = setInterval(async () => {
         await display.edit(embed.setFooter(`${--timer} seconds`));
         if (timer !== 0) return;
         clearInterval(hook);
+        collector.stop('banned');
         await display.edit(embed.setFooter('Member was banned.'));
+        message.author.send(config['anti-mention']['dm message']).catch(e => console.error(e));
         message.guild.ban(message.member, {reason: config['anti-mention']['ban reason']}).catch(e => console.error(e));
         display.clearReactions().catch(e => console.error(e));
         await report(message.guild, new RichEmbed()
@@ -59,6 +56,13 @@ async function handle(message: Message) {
             .setColor('GREEN')
             .setDescription(`${message.author} was pardoned.`));
     });
+}
+
+function getRandomText(user: User): string {
+    return (
+        config['anti-mention']['fun texts'][
+            Math.floor(Math.random() * config['anti-mention']['fun texts'].length)] as string
+    ).replace('{name}', `<@${user.id}>`);
 }
 
 export default new ListenerTask({
