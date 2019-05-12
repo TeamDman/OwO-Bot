@@ -54,8 +54,8 @@
     "anti-mention": {
         "_comment": "@Rei#0001",
         "match": "<@!?129439015849033728>",
-        "__comment": "ShinoSilence",
         "silence roles": {
+            "_comment": "[Shinobu Cafe]:[ShinoSilence]",
             "381386573830160396": "478360461817937921"
         },
         "countdown": 10,
