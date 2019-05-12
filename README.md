@@ -7,7 +7,7 @@ The default prefix is `OwO`, and it is what will be used in the examples in this
 Commands are individual `.ts` files located in `/app/commands/`.\
 Each file exports a single command.\
 Use `OwO help` to get a list of commands.\
-Use `OwO help info <command>` to get more info about a specific command. Both the name and aliases work for this.
+Use `OwO help <command>` to get more info about a specific command. Both the name and aliases work for this.
 
 Some commands have 'routes' in addition to having parameters.\
 Example:\
