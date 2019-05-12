@@ -47,6 +47,10 @@
         "invite prompt (empty to match anything)": "give me server",
         "invite link": "https://discord.gg/SYmvMM6"
     },
+    "dm for invite": {
+        "match": "give link",
+        "response": "https://discord.gg/SYmvMM6"
+    },
     "anti-mention": {
         "_comment": "@Rei#0001",
         "_match": "<@!?129439015849033728>",
