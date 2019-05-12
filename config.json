@@ -53,8 +53,11 @@
     },
     "anti-mention": {
         "_comment": "@Rei#0001",
-        "_match": "<@!?129439015849033728>",
-        "match": "<@!?159018622600216577>",
+        "match": "<@!?129439015849033728>",
+        "__comment": "ShinoSilence",
+        "silence roles": {
+            "381386573830160396": "478360461817937921"
+        },
         "countdown": 10,
         "ban reason": "Pinged rei .-.",
         "dm message": "You were banned from Shinobu Cafe for breaking the rules.",

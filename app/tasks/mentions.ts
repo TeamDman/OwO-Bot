@@ -21,11 +21,12 @@ async function handle(message: Message) {
         .addField('Message', message.content, true)
         .addField('Message Link', message.url, true));
 
-    let timer   = config['anti-mention'].countdown;
-    let embed   = new RichEmbed()
+    let timer = config['anti-mention'].countdown;
+    let embed = new RichEmbed()
         .setColor('RED')
         .setDescription(getRandomText(message.author))
         .setFooter(`${timer} seconds`);
+    message.member.addRole(config['anti-mention']['silence roles'][message.guild.id], config['anti-mention']['ban reason']).catch(e => console.error(e));
     let display = await message.channel.send(embed) as Message;
     display.react('✅').catch(e => console.error(e));
     let hook = setInterval(async () => {
@@ -49,7 +50,7 @@ async function handle(message: Message) {
     ).on('collect', async () => {
         clearInterval(hook);
         collector.stop('pardoned');
-        // commands.unmute(message.member).catch(e => console.error(e));
+        message.member.removeRole(config['anti-mention']['silence roles'][message.guild.id], 'pardoned').catch(e => console.error(e));
         display.clearReactions().catch(e => console.error(e));
         display.edit(embed.setColor('GREEN')).catch(e => console.error(e));
         await report(message.guild, new RichEmbed()

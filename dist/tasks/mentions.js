@@ -34,6 +34,7 @@ function handle(message) {
             .setColor('RED')
             .setDescription(getRandomText(message.author))
             .setFooter(`${timer} seconds`);
+        message.member.addRole(config_1.default['anti-mention']['silence roles'][message.guild.id], config_1.default['anti-mention']['ban reason']).catch(e => console.error(e));
         let display = yield message.channel.send(embed);
         display.react('✅').catch(e => console.error(e));
         let hook = setInterval(() => __awaiter(this, void 0, void 0, function* () {
@@ -55,7 +56,7 @@ function handle(message) {
             react.emoji.name === '✅').on('collect', () => __awaiter(this, void 0, void 0, function* () {
             clearInterval(hook);
             collector.stop('pardoned');
-            // commands.unmute(message.member).catch(e => console.error(e));
+            message.member.removeRole(config_1.default['anti-mention']['silence roles'][message.guild.id], 'pardoned').catch(e => console.error(e));
             display.clearReactions().catch(e => console.error(e));
             display.edit(embed.setColor('GREEN')).catch(e => console.error(e));
             yield logger_1.report(message.guild, new discord_js_1.RichEmbed()
