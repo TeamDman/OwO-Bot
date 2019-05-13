@@ -32,6 +32,9 @@ function getChannel(context, identifier) {
 }
 exports.getChannel = getChannel;
 function getMember(context, identifier) {
+    let match = identifier.match(/<@!?(\d+)>/);
+    if (match)
+        identifier = match[1];
     for (let member of context.members.values())
         if (member.id === identifier)
             return member;

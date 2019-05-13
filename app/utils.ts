@@ -1,7 +1,7 @@
 import {Client, Guild, GuildMember, Message, RichEmbed, Role, TextChannel} from 'discord.js';
 import * as logger                                                         from './logger';
-import {MessageContent}                                                    from './index';
 import {warn}                                                              from './logger';
+import {MessageContent}                                                    from './index';
 
 export function getRole(context: Guild, identifier: string): Role {
     for (let role of context.roles.values())
@@ -25,6 +25,9 @@ export function getChannel(context: Guild, identifier: string): TextChannel {
 
 
 export function getMember(context: Guild, identifier: string): GuildMember {
+    let match = identifier.match(/<@!?(\d+)>/);
+    if (match)
+        identifier = match[1];
     for (let member of context.members.values())
         if (member.id === identifier)
             return member;
@@ -111,11 +114,11 @@ export function cleanContent(context: Message, content: string): string {
         });
 }
 
-export async function hackBan(client:Client, identifier: string, reason:string): Promise<MessageContent> {
-    let banCount = 0;
+export async function hackBan(client: Client, identifier: string, reason: string): Promise<MessageContent> {
+    let banCount     = 0;
     let hackBanCount = 0;
     for (const [, guild] of client.guilds) {
-        const has = guild.members.has(identifier)?1:0;
+        const has = guild.members.has(identifier) ? 1 : 0;
         try {
             banCount += has;
             hackBanCount++;
@@ -130,7 +133,7 @@ export async function hackBan(client:Client, identifier: string, reason:string):
     return new RichEmbed()
         .setTitle('Chain Ban Results')
         .setColor('RED')
-        .addField('Ban Results',`User was banned from [${banCount}] of [${client.guilds.size}] available guilds.`)
+        .addField('Ban Results', `User was banned from [${banCount}] of [${client.guilds.size}] available guilds.`)
         .addField('Hackban results', `User was pre-banned from [${hackBanCount}] of [${client.guilds.size}] available guilds.`)
-        .setFooter(new Date().toLocaleString('en-ca'))
+        .setFooter(new Date().toLocaleString('en-ca'));
 }
