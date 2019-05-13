@@ -8,7 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const discord_js_1 = require("discord.js");
 const logger = require("./logger");
+const logger_1 = require("./logger");
 function getRole(context, identifier) {
     for (let role of context.roles.values())
         if (role.id == identifier)
@@ -30,6 +32,9 @@ function getChannel(context, identifier) {
 }
 exports.getChannel = getChannel;
 function getMember(context, identifier) {
+    let match = identifier.match(/<@!?(\d+)>/);
+    if (match)
+        identifier = match[1];
     for (let member of context.members.values())
         if (member.id === identifier)
             return member;
@@ -124,4 +129,30 @@ function cleanContent(context, content) {
     });
 }
 exports.cleanContent = cleanContent;
+function hackBan(client, identifier, reason) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let banCount = 0;
+        let hackBanCount = 0;
+        for (const [, guild] of client.guilds) {
+            const has = guild.members.has(identifier) ? 1 : 0;
+            try {
+                banCount += has;
+                hackBanCount++;
+                yield guild.ban(identifier, reason);
+            }
+            catch (e) {
+                banCount -= has;
+                hackBanCount--;
+                logger_1.warn(`Failed to ban ${identifier} in guild ${guild.name}. ${e}`);
+            }
+        }
+        return new discord_js_1.RichEmbed()
+            .setTitle('Chain Ban Results')
+            .setColor('RED')
+            .addField('Ban Results', `User was banned from [${banCount}] of [${client.guilds.size}] available guilds.`)
+            .addField('Hackban results', `User was pre-banned from [${hackBanCount}] of [${client.guilds.size}] available guilds.`)
+            .setFooter(new Date().toLocaleString('en-ca'));
+    });
+}
+exports.hackBan = hackBan;
 //# sourceMappingURL=utils.js.map
