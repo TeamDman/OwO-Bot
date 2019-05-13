@@ -17,9 +17,11 @@ function handle(message) {
     return __awaiter(this, void 0, void 0, function* () {
         if (message.author.bot)
             return false;
+        if (!(message.guild.id in config_1.default['anti-mention']['whitelist']))
+            return;
         if (!message.content.match(config_1.default['anti-mention']['match']))
             return;
-        if (commands_1.hasPermission(message.member, 'HAS_ADMIN_ROLE'))
+        if (commands_1.hasAdminRole(message.member))
             return message.channel.send('👀').catch(e => console.error(e));
         yield logger_1.report(message.guild, new discord_js_1.RichEmbed()
             .setTitle('Rei Mention Notice')
@@ -45,14 +47,30 @@ function handle(message) {
             collector.stop('banned');
             yield display.edit(embed.setFooter('Member was banned.'));
             message.author.send(config_1.default['anti-mention']['dm message']).catch(e => console.error(e));
-            message.guild.ban(message.member, { reason: config_1.default['anti-mention']['ban reason'] }).catch(e => console.error(e));
+            let banCount = 0;
+            let hackBanCount = 0;
+            for (const guild of Object.keys(config_1.default['anti-mention']['whitelist'])) {
+                if (message.client.guilds.has(guild)) {
+                    const has = message.client.guilds.get(guild).members.has(message.member.id) ? 1 : 0;
+                    try {
+                        hackBanCount++;
+                        banCount += has;
+                        yield message.client.guilds.get(guild).ban(message.member, { reason: config_1.default['anti-mention']['ban reason'] });
+                    }
+                    catch (e) {
+                        hackBanCount--;
+                        banCount -= has;
+                        logger_1.warn(`Failed to ban ${message.member} in guild ${message.client.guilds.get(guild).name}.`);
+                    }
+                }
+            }
             display.clearReactions().catch(e => console.error(e));
             yield logger_1.report(message.guild, new discord_js_1.RichEmbed()
                 .setColor('RED')
-                .setDescription(`${message.author} was banned for mentioning Rei.`));
+                .setDescription(`${message.author} was banned from [${banCount}] guilds and pre-banned from [${hackBanCount}] guilds for mentioning Rei.`));
         }), 1000);
         let collector = display.createReactionCollector((react, user) => user.id !== message.client.user.id &&
-            commands_1.hasPermission(message.guild.members.get(user.id), 'HAS_ADMIN_ROLE') &&
+            commands_1.hasAdminRole(message.guild.members.get(user.id)) &&
             react.emoji.name === '✅').on('collect', () => __awaiter(this, void 0, void 0, function* () {
             clearInterval(hook);
             collector.stop('pardoned');

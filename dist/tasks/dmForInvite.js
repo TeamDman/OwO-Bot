@@ -23,7 +23,7 @@ exports.default = new tasks_1.ListenerTask({
     name: 'DM For Invite',
     description: `Provides invite links in DMs (prompt: '${config_1.default['dm for invite']['match']}'.)`,
     listeners: {
-        'message': handle,
+        'message': handle
     }
 });
 //# sourceMappingURL=dmForInvite.js.map

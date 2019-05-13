@@ -25,7 +25,7 @@ exports.shouldPurge = shouldPurge;
 function startPurge(context, count) {
     return __awaiter(this, void 0, void 0, function* () {
         if (purging)
-            throw new Error("Already purging.");
+            throw new Error('Already purging.');
         let toPurge = context.guild.members
             .filter(shouldPurge)
             .array()
@@ -62,7 +62,12 @@ exports.startPurge = startPurge;
 function purgeMember(member) {
     return __awaiter(this, void 0, void 0, function* () {
         if (config_1.default.snap_dm_message.length > 0) {
-            yield member.send(config_1.default.snap['dm message']);
+            try {
+                yield member.send(config_1.default.snap['dm message']);
+            }
+            catch (e) {
+                // Can't dm user, do nothing.
+            }
         }
         yield member.kick(config_1.default.snap['kick reason']);
     });
