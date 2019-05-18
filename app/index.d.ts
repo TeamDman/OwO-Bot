@@ -62,7 +62,7 @@ export interface TaskProperties {
 }
 
 export interface Task extends TaskProperties {
-    start: (client: Client) => MessageContent;
-    stop?: (client: Client) => MessageContent;
+    start: (client: Client) => Promise<MessageContent>;
+    stop?: (client: Client) => Promise<MessageContent>;
     runningCount: number;
 }
