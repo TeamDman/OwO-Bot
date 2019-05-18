@@ -28,7 +28,7 @@ export function init(client: Client): void {
     refreshTasks();
     taskList.filter(t => t.autoStart).forEach(task => {
         try {
-            logger.info(logger.strip(task.start(client)));
+            logger.info(logger.strip(task.start.call(task, client)));
         } catch (error) {
             logger.error(`Error running task ${task.name}: ${error}`);
         }
@@ -44,7 +44,7 @@ export async function startTask(client: Client, identifier: string): Promise<Mes
     if (task === null)
         return new RichEmbed().setColor('ORANGE').setDescription(`Could not find task with identifier ${identifier}.`);
     try {
-        return await task.start(client);
+        return await task.start.call(task,client);
     } catch (error) {
         return new RichEmbed().setColor('ORANGE').setDescription(`Error starting task ${identifier}: ${error}`);
     }
@@ -55,7 +55,7 @@ export async function stopTask(client: Client, identifier: string): Promise<Mess
     if (task === null)
         return new RichEmbed().setColor('ORANGE').setDescription(`Could not find task with identifier ${identifier}.`);
     try {
-        return await task.stop(client);
+        return await task.stop.call(task, client);
     } catch (error) {
         return new RichEmbed().setColor('ORANGE').setDescription(`Error stopping task ${identifier}: ${error}`);
     }
