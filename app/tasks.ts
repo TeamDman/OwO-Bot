@@ -61,7 +61,7 @@ export async function stopTask(client: Client, identifier: string): Promise<Mess
     }
 }
 
-export function ListenerTask(properties: { listeners: { [index: string]: (...args: any) => void }, start: (client: Client) => Promise<void>, stop: (client: Client) => Promise<void> } & TaskProperties): void {
+export function ListenerTask(properties: { listeners: { [index: string]: (...args: any) => void }, start?: (client: Client) => Promise<void>, stop?: (client: Client) => Promise<void> } & TaskProperties): void {
     for (const [key, value] of Object.entries(properties))
         if (key !== 'listeners')
             this[key] = value;
