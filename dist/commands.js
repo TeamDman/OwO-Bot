@@ -28,6 +28,10 @@ function init() {
     });
 }
 exports.init = init;
+function hasAdminRole(member) {
+    return member.guild.id in config_1.default.bot['admin roles'] && Object.keys(config_1.default.bot['admin roles'][member.guild.id]).some(role => member.roles.has(role));
+}
+exports.hasAdminRole = hasAdminRole;
 function hasPermissions(member, perms) {
     if (member.id in config_1.default.bot['bot manager ids'] && member.client.user.id in config_1.default.bot['dev bot ids'])
         return true;
