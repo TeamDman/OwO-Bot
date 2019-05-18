@@ -1,5 +1,5 @@
-import {Client, RichEmbed, TextChannel} from 'discord.js';
-import {Task}                           from '../index';
+import {Client, Message, RichEmbed, TextChannel} from 'discord.js';
+import {Task}                                    from '../index';
 
 const channelID = '579412150657744896';
 
@@ -50,10 +50,10 @@ const info = [{
 }];
 
 export default {
-    name:            'Role Controller',
+    name:            'Controller Creator',
     allowConcurrent: false,
     autoStart:       false,
-    description:     'Creates and listens to the role controller message.',
+    description:     'Creates the role controller message.',
     runningCount:    0,
     start:           async (client: Client) => {
         this.runningCount++;
@@ -63,25 +63,29 @@ export default {
             return new RichEmbed().setColor('ORANGE').setDescription(`Could not find channel [${channelID}].`);
         }
         let send = [];
-        const pop = ()=> {
-           if (send.length > 0) {
-               send.push('');
-               channel.send(send);
-               send = [];
-           }
-        };
         let emojis = client.emojis.array();
         let emojiRoles = {};
+        let controller = {};
+        const pop = async ()=> {
+            if (send.length > 0) {
+                const m = await channel.send(send) as Message;
+                controller[m.id] = emojiRoles;
+                emojiRoles = {};
+                send = [];
+            }
+        };
         for (const data of info) {
             const emoji = emojis.pop();
             if (data.type === 'CATEGORY') {
-                pop();
+                await pop();
                 send.push(`${emoji}\t__**${data.label}**__`);
             } else {
                 send.push(`${emoji}\t${data.label}`);
             }
+            emojiRoles[emoji.id] = data.role;
         }
-        pop();
+        await pop();
+        console.log(JSON.stringify(controller));
         this.runningCount--;
     },
     stop:            async (client: Client) => {

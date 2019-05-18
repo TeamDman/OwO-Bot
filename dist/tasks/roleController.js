@@ -69,26 +69,30 @@ exports.default = {
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`Could not find channel [${channelID}].`);
         }
         let send = [];
-        const pop = () => {
-            if (send.length > 0) {
-                send.push('');
-                channel.send(send);
-                send = [];
-            }
-        };
         let emojis = client.emojis.array();
         let emojiRoles = {};
+        let controller = {};
+        const pop = () => __awaiter(this, void 0, void 0, function* () {
+            if (send.length > 0) {
+                const m = yield channel.send(send);
+                controller[m.id] = emojiRoles;
+                emojiRoles = {};
+                send = [];
+            }
+        });
         for (const data of info) {
             const emoji = emojis.pop();
             if (data.type === 'CATEGORY') {
-                pop();
+                yield pop();
                 send.push(`${emoji}\t__**${data.label}**__`);
             }
             else {
                 send.push(`${emoji}\t${data.label}`);
             }
+            emojiRoles[emoji.id] = data.role;
         }
-        pop();
+        yield pop();
+        console.log(JSON.stringify(controller));
         this.runningCount--;
     }),
     stop: (client) => __awaiter(this, void 0, void 0, function* () {
