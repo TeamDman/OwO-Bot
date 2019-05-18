@@ -174,4 +174,8 @@ function onMessage(message) {
     });
 }
 exports.onMessage = onMessage;
+try { }
+catch (e) {
+    logger.error(`Error during message handler\n${e}`);
+}
 //# sourceMappingURL=commands.js.map
