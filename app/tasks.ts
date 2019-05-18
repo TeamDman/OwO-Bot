@@ -36,7 +36,7 @@ export function init(client: Client): void {
 }
 
 export function getTask(identifier: string): Task {
-    return taskList.find(task => task.name.toLowerCase() == identifier.toLowerCase());
+    return taskList.find(task => task.name.toLowerCase() == identifier.toLowerCase()) || null;
 }
 
 export async function startTask(client: Client, identifier: string): Promise<MessageContent> {
