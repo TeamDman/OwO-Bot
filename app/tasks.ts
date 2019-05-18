@@ -61,7 +61,7 @@ export async function stopTask(client: Client, identifier: string): Promise<Mess
     }
 }
 
-export function ListenerTask(properties: { listeners: { [index: string]: (...args: any) => void } } & TaskProperties): void {
+export function ListenerTask(properties: { listeners: { [index: string]: (...args: any) => void }, start: (client: Client) => Promise<void>, stop: (client: Client) => Promise<void> } & TaskProperties): void {
     for (const [key, value] of Object.entries(properties))
         if (key !== 'listeners')
             this[key] = value;
@@ -72,20 +72,26 @@ export function ListenerTask(properties: { listeners: { [index: string]: (...arg
             this[key]=value;
 
     this.runningCount = 0;
-    this.start        = (client: Client): MessageContent => {
+    this.start        = async (client: Client): Promise<MessageContent> => {
         if (this.runningCount === 1)
             return new RichEmbed().setColor('ORANGE').setDescription(`${properties.name} task is already running.`);
+        if (properties.start) {
+            await properties.start(client);
+        }
         for (const [key, value] of Object.entries(properties.listeners)) {
-            client.addListener(key, value);
+            await client.addListener(key, value);
         }
         this.runningCount = 1;
         return new RichEmbed().setColor('GREEN').setDescription(`${properties.name} task has been started.`);
     };
-    this.stop         = (client: Client): MessageContent => {
+    this.stop         = async (client: Client): Promise<MessageContent> => {
         if (this.runningCount === 0)
             return new RichEmbed().setColor('ORANGE').setDescription(`${properties.name} task is not running.`);
         for (const [key, value] of Object.entries(properties.listeners)) {
             client.removeListener(key, value);
+        }
+        if (properties.stop) {
+            await properties.stop(client);
         }
         this.runningCount = 0;
         return new RichEmbed().setColor('GREEN').setDescription(`${properties.name} task has been stopped.`);

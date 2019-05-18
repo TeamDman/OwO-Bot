@@ -85,24 +85,30 @@ function ListenerTask(properties) {
         if (this[key] === undefined)
             this[key] = value;
     this.runningCount = 0;
-    this.start = (client) => {
+    this.start = (client) => __awaiter(this, void 0, void 0, function* () {
         if (this.runningCount === 1)
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`${properties.name} task is already running.`);
+        if (properties.start) {
+            yield properties.start(client);
+        }
         for (const [key, value] of Object.entries(properties.listeners)) {
-            client.addListener(key, value);
+            yield client.addListener(key, value);
         }
         this.runningCount = 1;
         return new discord_js_1.RichEmbed().setColor('GREEN').setDescription(`${properties.name} task has been started.`);
-    };
-    this.stop = (client) => {
+    });
+    this.stop = (client) => __awaiter(this, void 0, void 0, function* () {
         if (this.runningCount === 0)
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`${properties.name} task is not running.`);
         for (const [key, value] of Object.entries(properties.listeners)) {
             client.removeListener(key, value);
         }
+        if (properties.stop) {
+            yield properties.stop(client);
+        }
         this.runningCount = 0;
         return new discord_js_1.RichEmbed().setColor('GREEN').setDescription(`${properties.name} task has been stopped.`);
-    };
+    });
 }
 exports.ListenerTask = ListenerTask;
 //# sourceMappingURL=tasks.js.map
