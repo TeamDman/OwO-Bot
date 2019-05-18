@@ -7,8 +7,8 @@ function getLastSeen(id) {
 }
 exports.getLastSeen = getLastSeen;
 exports.default = new tasks_1.ListenerTask({
-    name: 'Logger',
-    description: 'Logs modified and deleted messages.',
+    name: 'Stalker',
+    description: 'Logs user online activity.',
     listeners: {
         'message': (message) => last[message.author.id] = Date.now(),
         'messageDelete': (message) => last[message.author.id] = Date.now(),
