@@ -10,7 +10,6 @@ export default new ListenerTask({
     listeners:   {
         'message': (message:Message) => {
             if (message.author.bot) return;
-            if (message.guild.id in config['bot guild:[channel] whitelists'] && !(message.channel.id in config['bot guild:[channel] whitelists'][message.guild.id])) return;
             if (message.content.toLowerCase().indexOf('terracotta') == -1) return;
             if (message.content.toLowerCase().indexOf('where') == -1 && message.content.toLowerCase().indexOf('how') == -1) return;
             message.channel.send('WhErE iS ThE TeRrAcOtTa!?');
