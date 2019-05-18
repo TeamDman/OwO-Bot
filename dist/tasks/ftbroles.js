@@ -1,17 +1,23 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-function getInfo(message) {
-    return `${message.guild}\t#${'name' in message.channel && message.channel.name || 'UNKNOWN CHANNEL'}\t<@${message.author.id}> (${message.author.tag})`;
-}
 exports.default = {
     allowConcurrent: false,
     autoStart: false,
     description: "Creates the role controller message.",
     name: "FTBRolesSend",
     runningCount: 0,
-    start: (client) => {
-    },
-    stop: (client) => {
-    },
+    start: (client) => __awaiter(this, void 0, void 0, function* () {
+        this.runningCount++;
+    }),
+    stop: (client) => __awaiter(this, void 0, void 0, function* () {
+    }),
 };
 //# sourceMappingURL=ftbroles.js.map
