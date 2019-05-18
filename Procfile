@@ -1,0 +1,1 @@
+discord-bot: node dist/app.js
