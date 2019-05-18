@@ -16,6 +16,7 @@ exports.default = {
     runningCount: 0,
     start: (client) => __awaiter(this, void 0, void 0, function* () {
         this.runningCount++;
+        this.runningCount--;
     }),
     stop: (client) => __awaiter(this, void 0, void 0, function* () {
     }),
