@@ -36,7 +36,7 @@ function init(client) {
     refreshTasks();
     taskList.filter(t => t.autoStart).forEach(task => {
         try {
-            logger.info(logger.strip(task.start(client)));
+            logger.info(logger.strip(task.start.call(task, client)));
         }
         catch (error) {
             logger.error(`Error running task ${task.name}: ${error}`);
@@ -54,7 +54,7 @@ function startTask(client, identifier) {
         if (task === null)
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`Could not find task with identifier ${identifier}.`);
         try {
-            return yield task.start(client);
+            return yield task.start.call(task, client);
         }
         catch (error) {
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`Error starting task ${identifier}: ${error}`);
@@ -68,7 +68,7 @@ function stopTask(client, identifier) {
         if (task === null)
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`Could not find task with identifier ${identifier}.`);
         try {
-            return yield task.stop(client);
+            return yield task.stop.call(task, client);
         }
         catch (error) {
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`Error stopping task ${identifier}: ${error}`);
