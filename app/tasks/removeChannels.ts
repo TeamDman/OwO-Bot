@@ -18,9 +18,11 @@ export default {
             this.runningCount--;
             return new RichEmbed().setColor('ORANGE').setDescription(`Could not find guild [${guildID}].`);
         }
-        for (const role of guild.roles.values()) {
+        for (const channel of guild.channels.values()) {
+            if (channel.id === '574709756695150604')
+                continue;
             try {
-                await role.delete('role controller');
+                await channel.delete('role controller');
                 count++
             } catch (e) {
 

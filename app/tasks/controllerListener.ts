@@ -1,7 +1,7 @@
-import {Client, Message, MessageReaction, RichEmbed, TextChannel, User} from 'discord.js';
-import {Task}                                                           from '../index';
-import {ListenerTask}                                                   from '../tasks';
-import {warn}                                                           from '../logger';
+import {Client, GuildChannel, Message, MessageReaction, RichEmbed, TextChannel, User} from 'discord.js';
+import {Task}                                                                         from '../index';
+import {ListenerTask}                                                                 from '../tasks';
+import {warn}                                                                         from '../logger';
 
 const channelID = '579412150657744896';
 
@@ -25,24 +25,45 @@ const info = {
     }
 };
 
-async function action(reaction: MessageReaction, user: User): Promise<void> {
-    if (reaction.message.id in info) {
-        if (reaction.message.guild === null)
-            return;
-        const member = reaction.message.guild.members.get(user.id);
-        if (member === null)
-            return;
-        const roleID = info[reaction.message.id][reaction.emoji.id];
-        if (roleID === undefined)
-            return;
-        try {
-            if (member.roles.has(roleID))
-                await member.removeRole(roleID);
-            else
-                await member.addRole(roleID);
-        } catch (e) {
-            warn(`Error in reaction controller: ${e}`);
+async function addReacts(client: Client): Promise<void> {
+    const channel = client.channels.get(channelID) as GuildChannel & TextChannel;
+    if (channel === null)
+        return;
+    try {
+        for (const [messageID, data] of Object.entries(info)) {
+            const message = await channel.fetchMessage(messageID);
+            for (const [emojiID, roleID] of Object.entries(data)) {
+                await message.react(emojiID);
+            }
         }
+    } catch (e) {
+        warn(`Error starting reaction controller: ${e}`);
+    }
+}
+
+async function action(reaction: MessageReaction, user: User): Promise<void> {
+    if (user.bot)
+        return;
+    if (!(reaction.message.id in info))
+        return;
+    if (reaction.message.guild === null)
+        return;
+
+    const member = reaction.message.guild.members.get(user.id);
+    if (member === null)
+        return;
+
+    const roleID = info[reaction.message.id][reaction.emoji.id];
+    if (roleID === undefined)
+        return;
+
+    try {
+        if (member.roles.has(roleID))
+            await member.removeRole(roleID);
+        else
+            await member.addRole(roleID);
+    } catch (e) {
+        warn(`Error in reaction controller: ${e}`);
     }
 }
 
@@ -51,6 +72,7 @@ export default new ListenerTask({
     description: 'Controls assignment of roles according to the controller.',
     autoStart: true,
     allowConcurrent: false,
+    start: addReacts,
     listeners: {
         'messageReactionAdd': action,
         'messageReactionRemove': action

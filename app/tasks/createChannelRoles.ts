@@ -48,7 +48,6 @@ export default {
                 const role = await guild.createRole({
                     name: `${category.name} - ${channel.name}`
                 } as RoleData, 'role controller');
-                console.log(`Created role [${role.id}] '${role.name}' for channel [${channel.id}] ${channel.name}.`);
                 rtn.push({
                     label: `<#${channel.id}>`,
                     role: role.id,
@@ -59,11 +58,9 @@ export default {
                 await channel.overwritePermissions(role, {
                     READ_MESSAGES: true
                 }, 'role controller');
-                console.log(`Assigned role [${role.id}] to channel [${channel.id}].`);
                 await channel.overwritePermissions(categoryRole, {
                     READ_MESSAGES: true
                 }, 'role controller');
-                console.log(`Assigned role [${categoryRole.id}] to channel [${channel.id}].`);
                 await channel.overwritePermissions(everyone, {
                     READ_MESSAGES: false
                 }, 'role controller');
