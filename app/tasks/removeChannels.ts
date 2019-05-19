@@ -4,10 +4,10 @@ import {Task}                                    from '../index';
 const guildID = '574709755772141569';
 
 export default {
-    name: "Remove Roles",
+    name: "Remove Channels",
     allowConcurrent: false,
     autoStart: false,
-    description: "Removes all roles.",
+    description: "Removes all channels.",
     runningCount: 0,
     start: async (client: Client) => {
         this.runningCount++;
@@ -29,6 +29,6 @@ export default {
             }
         }
         this.runningCount--;
-        return new RichEmbed().setDescription(`Removed ${count} roles in ${(Date.now()-start)/1000} seconds.`);
+        return new RichEmbed().setDescription(`Removed ${count} channels in ${(Date.now()-start)/1000} seconds.`);
     },
 } as Task
