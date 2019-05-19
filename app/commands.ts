@@ -23,6 +23,8 @@ export function init() {
 export function hasPermissions(member: GuildMember, perms: Permission[]) {
     if (member.id in config.bot['bot manager ids'] && member.client.user.id in config.bot['dev bot ids'])
         return true;
+    if (member.guild.ownerID === member.id)
+        return true;
     for (let perm of perms) {
         if (typeof perm === 'string') {
             if (perm === 'MANAGE_BOT') {
