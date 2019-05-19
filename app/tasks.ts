@@ -36,6 +36,7 @@ export function init(client: Client): void {
 }
 
 export function getTask(identifier: string): Task {
+    refreshTasks();
     return taskList.find(task => task.name.toLowerCase() == identifier.toLowerCase()) || null;
 }
 
