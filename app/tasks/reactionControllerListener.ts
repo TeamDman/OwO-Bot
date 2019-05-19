@@ -105,7 +105,7 @@ async function addReacts(client: Client): Promise<void> {
 }
 
 async function action(reaction: MessageReaction, user: User): Promise<void> {
-    console.log(`User ${user.username} reacted with ${reaction.emoji} to message ${reaction.message.content}.`);
+    // console.log(`User ${user.username} reacted with ${reaction.emoji} to message ${reaction.message.content}.`);
     if (user.bot)
         return;
     if (!(reaction.message.id in info))

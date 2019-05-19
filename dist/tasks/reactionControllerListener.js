@@ -113,7 +113,7 @@ function addReacts(client) {
 }
 function action(reaction, user) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(`User ${user.username} reacted with ${reaction.emoji} to message ${reaction.message.content}.`);
+        // console.log(`User ${user.username} reacted with ${reaction.emoji} to message ${reaction.message.content}.`);
         if (user.bot)
             return;
         if (!(reaction.message.id in info))
