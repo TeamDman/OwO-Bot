@@ -117,7 +117,7 @@ async function action(reaction: MessageReaction, user: User): Promise<void> {
     if (member === null)
         return;
 
-    const roleID = info[reaction.message.id][reaction.emoji.id];
+    const roleID = info[reaction.message.id][reaction.emoji.name];
     if (roleID === undefined)
         return;
 
