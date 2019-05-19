@@ -34,14 +34,14 @@ function refreshTasks() {
 exports.refreshTasks = refreshTasks;
 function init(client) {
     refreshTasks();
-    taskList.filter(t => t.autoStart).forEach(task => {
+    taskList.filter(t => t.autoStart).forEach((task) => __awaiter(this, void 0, void 0, function* () {
         try {
-            logger.info(logger.strip(task.start.call(task, client)));
+            logger.info(logger.strip(yield task.start.call(task, client)));
         }
         catch (error) {
             logger.error(`Error running task ${task.name}: ${error}`);
         }
-    });
+    }));
 }
 exports.init = init;
 function getTask(identifier) {
