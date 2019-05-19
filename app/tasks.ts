@@ -26,9 +26,9 @@ export function refreshTasks(): void {
 
 export function init(client: Client): void {
     refreshTasks();
-    taskList.filter(t => t.autoStart).forEach(task => {
+    taskList.filter(t => t.autoStart).forEach(async task => {
         try {
-            logger.info(logger.strip(task.start.call(task, client)));
+            logger.info(logger.strip(await task.start.call(task, client)));
         } catch (error) {
             logger.error(`Error running task ${task.name}: ${error}`);
         }
