@@ -27,7 +27,7 @@ const channels = {
 };
 
 export default {
-    name:            'Create Channels',
+    name:            'Channel Creator',
     allowConcurrent: false,
     autoStart:       false,
     description:     'Populates the channel list to mimic FTB.',

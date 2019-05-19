@@ -4,7 +4,7 @@ import {Task}                                    from '../index';
 const guildID = '574709755772141569';
 
 export default {
-    name: "Remove Channels",
+    name: "Channel Remover",
     allowConcurrent: false,
     autoStart: false,
     description: "Removes all channels.",
