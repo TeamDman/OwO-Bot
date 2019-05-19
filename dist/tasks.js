@@ -45,6 +45,7 @@ function init(client) {
 }
 exports.init = init;
 function getTask(identifier) {
+    refreshTasks();
     return taskList.find(task => task.name.toLowerCase() == identifier.toLowerCase()) || null;
 }
 exports.getTask = getTask;

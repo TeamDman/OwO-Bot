@@ -17,6 +17,20 @@ const blacklist = {
     '579445428244971520': true,
     '579445429498806282': true,
 };
+function shuffle(array) {
+    let currentIndex = array.length, temporaryValue, randomIndex;
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
+}
 exports.default = {
     name: "Create Channel Roles",
     allowConcurrent: false,
@@ -38,7 +52,7 @@ exports.default = {
             return new discord_js_1.RichEmbed().setColor('ORANGE').setDescription(`Could not find @everyone role for guild [${guildID}].`);
         }
         const rtn = [];
-        const emojis = client.emojis.array();
+        const emojis = shuffle(require('../../emojis.json').emojis).filter((e) => e.emoji.length === 1);
         for (const c of guild.channels.filter((c) => c.type === 'category').values()) {
             //type guard
             const category = c;
@@ -46,10 +60,10 @@ exports.default = {
                 name: category.name
             }, 'role controller');
             count++;
-            let emoji = emojis.pop();
+            let emoji = emojis.pop().emoji;
             let item = {
-                send: [`${emoji.toString()} __**${category.name}**__`],
-                reacts: { [emoji.id]: categoryRole.id },
+                send: [`${emoji} __**${category.name}**__`],
+                reacts: { [emoji]: categoryRole.id },
             };
             for (const channel of category.children.values()) {
                 if (channel.id in blacklist)
@@ -57,9 +71,9 @@ exports.default = {
                 const role = yield guild.createRole({
                     name: `${category.name} - ${channel.name}`
                 }, 'role controller');
-                emoji = emojis.pop();
-                item.send.push(`${emoji.toString()} <#${channel.id}>`);
-                item.reacts[emoji.id] = role.id;
+                emoji = emojis.pop().emoji;
+                item.send.push(`${emoji} <#${channel.id}>`);
+                item.reacts[emoji] = role.id;
                 count++;
                 yield channel.overwritePermissions(role, {
                     READ_MESSAGES: true

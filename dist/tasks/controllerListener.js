@@ -137,7 +137,7 @@ function action(reaction, user) {
     });
 }
 exports.default = new tasks_1.ListenerTask({
-    name: 'Controller Listener',
+    name: 'Reaction Controller Listener',
     description: 'Controls assignment of roles according to the controller.',
     autoStart: true,
     allowConcurrent: false,
