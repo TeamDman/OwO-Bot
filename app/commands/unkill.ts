@@ -1,18 +1,18 @@
 import {Command, CommandExecutor} from '../index';
-import {hackBan}                  from '../utils';
+import {hackBan, unHackBan}       from '../utils';
 
 const invoke: CommandExecutor = async (message, args) => {
-    return await hackBan(message.client, args.shift(), args.shift());
+    return await unHackBan(message.client, args.shift(), args.shift());
 };
 
 export default {
-    name:        'Kill',
-    commands:    ['kill', 'hackban'],
-    description: 'Bans a user from every connected guild.',
+    name:        'Unkill',
+    commands:    ['unkill', 'unhackban'],
+    description: 'Unbans a user from every connected guild.',
     permissions: ['BAN_MEMBERS'],
     parameters:  [
         {
-            name: 'Member Identifier',
+            name: 'Identifier',
             type: 'STRING'
         },
         {

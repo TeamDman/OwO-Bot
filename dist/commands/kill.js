@@ -19,8 +19,8 @@ exports.default = {
     permissions: ['BAN_MEMBERS'],
     parameters: [
         {
-            name: 'Member',
-            type: 'USER'
+            name: 'Member Identifier',
+            type: 'STRING'
         },
         {
             name: 'Reason',

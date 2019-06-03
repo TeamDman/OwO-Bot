@@ -35,6 +35,8 @@ exports.hasAdminRole = hasAdminRole;
 function hasPermissions(member, perms) {
     if (member.id in config_1.default.bot['bot manager ids'] && member.client.user.id in config_1.default.bot['dev bot ids'])
         return true;
+    if (member.guild.ownerID === member.id)
+        return true;
     for (let perm of perms) {
         if (typeof perm === 'string') {
             if (perm === 'MANAGE_BOT') {
@@ -162,8 +164,9 @@ function onMessage(message) {
                 return;
             let tokens = message.content.substr(message.content.match(config_1.default.bot.prefix).index + config_1.default.bot.prefix.length + 1).split(' ');
             let cmd = tokens.shift().trim();
+            console.log(cmd);
             for (let command of commands) {
-                if (command.commands.some(c => cmd.match(c) !== null)) {
+                if (command.commands.some(c => c === cmd)) {
                     let result = yield attemptCommand(message, command, tokens.join(' '));
                     if (result !== null && result !== undefined && !(typeof result === 'string' && result.length === 0))
                         return yield message.channel.send(result);
