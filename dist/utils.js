@@ -155,4 +155,31 @@ function hackBan(client, identifier, reason) {
     });
 }
 exports.hackBan = hackBan;
+function unHackBan(client, identifier, reason) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let unbanCount = 0;
+        let count = 0;
+        for (const [, guild] of client.guilds) {
+            let has = 0;
+            try {
+                count++;
+                has = (yield guild.fetchBans()).has(identifier) ? 1 : 0;
+                unbanCount += has;
+                yield guild.unban(identifier, reason);
+            }
+            catch (e) {
+                unbanCount -= has;
+                count--;
+                logger_1.warn(`Failed to unban ${identifier} in guild ${guild.name}. ${e}`);
+            }
+        }
+        return new discord_js_1.RichEmbed()
+            .setTitle('Chain Ban Results')
+            .setColor('GREEN')
+            .addField('Unban Results', `User was unbanned from [${unbanCount}] of [${client.guilds.size}] available guilds.`)
+            .addField('Unhackban results', `User was un-pre-banned from [${count}] of [${client.guilds.size}] available guilds.`)
+            .setFooter(new Date().toLocaleString('en-ca'));
+    });
+}
+exports.unHackBan = unHackBan;
 //# sourceMappingURL=utils.js.map
