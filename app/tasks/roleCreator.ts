@@ -30,7 +30,7 @@ function shuffle(array) {
 }
 
 export default {
-    name: "Roles Creator",
+    name: "Role Creator",
     allowConcurrent: false,
     autoStart: false,
     description: "Creates channels for each role.",

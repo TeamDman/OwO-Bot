@@ -3,27 +3,33 @@ import {Task}              from '../index';
 
 const guildID  = '574709755772141569';
 const packs    = [
+    'interactions',
+    'skyfactory 3',
+    'omnifactory'
+];
+const archive = [
     'continuum',
     'ftb presents direwolf20',
     'ftb presents skyfactory 3',
     'ftb presents stoneblock 2',
     'infinity evolved',
-    'interactions',
     'pyramid reborn',
     'revelation',
     'sky adventures',
     'sky odyssey',
     'ultimate reloaded',
     'builders paradise',
-    'other ftb mod packs'
-];
+].sort();
 const channels = {
-    'IMPORTANT':     ['announcements', 'rules'],
-    'TEXT CHANNELS': ['general', 'support', 'server-operators'],
-    ...packs.reduce((map: any, pack: string) => {
-        map[pack.toUpperCase()] = ['general', 'media', 'servers'];
-        return map;
-    }, {})
+    'IMPORTANT':     ['announcements', 'rules','new-users'],
+    'COMMON': ['general', 'support', 'streamers', 'server-operators', 'development', 'moderators'],
+    'PACKS-GENERAL': packs,
+    'MEDIA': packs,
+    'FAQ': packs,
+    'SERVERS': packs,
+    'ARCHIVE-PACKS': archive,
+    'ARCHIVE-MEDIA': archive,
+    'ARCHIVE-FAQ': archive,
 };
 
 export default {
@@ -46,6 +52,7 @@ export default {
             for (const channelName of Object.values(channelNames)) {
                 const channel = await guild.createChannel(channelName, 'text', [], 'role controller');
                 await channel.setParent(category, 'role controller');
+                count++;
             }
         }
         this.runningCount--;

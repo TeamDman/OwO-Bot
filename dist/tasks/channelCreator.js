@@ -11,24 +11,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const guildID = '574709755772141569';
 const packs = [
+    'interactions',
+    'skyfactory 3',
+    'omnifactory'
+];
+const archive = [
     'continuum',
     'ftb presents direwolf20',
     'ftb presents skyfactory 3',
     'ftb presents stoneblock 2',
     'infinity evolved',
-    'interactions',
     'pyramid reborn',
     'revelation',
     'sky adventures',
     'sky odyssey',
     'ultimate reloaded',
     'builders paradise',
-    'other ftb mod packs'
-];
-const channels = Object.assign({ 'IMPORTANT': ['announcements', 'rules'], 'TEXT CHANNELS': ['general', 'support', 'server-operators'] }, packs.reduce((map, pack) => {
-    map[pack.toUpperCase()] = ['general', 'media', 'servers'];
-    return map;
-}, {}));
+].sort();
+const channels = {
+    'IMPORTANT': ['announcements', 'rules', 'new-users'],
+    'COMMON': ['general', 'support', 'streamers', 'server-operators', 'development', 'moderators'],
+    'PACKS-GENERAL': packs,
+    'MEDIA': packs,
+    'FAQ': packs,
+    'SERVERS': packs,
+    'ARCHIVE-PACKS': archive,
+    'ARCHIVE-MEDIA': archive,
+    'ARCHIVE-FAQ': archive,
+};
 exports.default = {
     name: 'Channel Creator',
     allowConcurrent: false,
@@ -49,6 +59,7 @@ exports.default = {
             for (const channelName of Object.values(channelNames)) {
                 const channel = yield guild.createChannel(channelName, 'text', [], 'role controller');
                 yield channel.setParent(category, 'role controller');
+                count++;
             }
         }
         this.runningCount--;
