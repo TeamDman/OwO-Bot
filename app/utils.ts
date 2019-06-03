@@ -137,3 +137,29 @@ export async function hackBan(client: Client, identifier: string, reason: string
         .addField('Hackban results', `User was pre-banned from [${hackBanCount}] of [${client.guilds.size}] available guilds.`)
         .setFooter(new Date().toLocaleString('en-ca'));
 }
+
+
+export async function unHackBan(client: Client, identifier: string, reason: string): Promise<MessageContent> {
+    let unbanCount     = 0;
+    let count = 0;
+    for (const [, guild] of client.guilds) {
+        let has = 0;
+        try {
+            count++;
+            has = (await guild.fetchBans()).has(identifier) ? 1 : 0;
+            unbanCount += has;
+            await guild.unban(identifier, reason);
+        } catch (e) {
+            unbanCount -= has;
+            count--;
+            warn(`Failed to unban ${identifier} in guild ${guild.name}. ${e}`);
+        }
+    }
+
+    return new RichEmbed()
+        .setTitle('Chain Ban Results')
+        .setColor('GREEN')
+        .addField('Unban Results', `User was unbanned from [${unbanCount}] of [${client.guilds.size}] available guilds.`)
+        .addField('Unhackban results', `User was un-pre-banned from [${count}] of [${client.guilds.size}] available guilds.`)
+        .setFooter(new Date().toLocaleString('en-ca'));
+}
