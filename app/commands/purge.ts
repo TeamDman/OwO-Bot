@@ -18,6 +18,7 @@ export default {
     name:       'Purge',
     commands:   ['purge'],
     description: 'Removes recent messages from the channel.',
+    permissions: ['MANAGE_MESSAGES'],
     parameters: [{
         name: 'Count',
         description: 'Amount of messages to purge, not including your own.',
