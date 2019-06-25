@@ -137,12 +137,13 @@ export async function onMessage(message: Message) {
     try {
         if (message.author.bot) return;
         if (message.channel.type === 'text' && message.guild.id in config.bot['bot usage channel whitelists'] && !(message.channel.id in config.bot['bot usage channel whitelists'][message.guild.id])) return;
+        if (message.channel.type === 'text' && message.guild.id in config.bot['bot usage channel blacklists'] && (message.channel.id in config.bot['bot usage channel blacklists'][message.guild.id])) return;
         if (message.channel.type !== 'text') logger.info(logger.formatMessageToString(message));
-        if (message.content.match(config.bot.prefix) === null) return;
+        const prefixMatch = message.content.match(config.bot.prefix);
+        if (prefixMatch === null) return;
 
-        let tokens = message.content.substr(message.content.match(config.bot.prefix).index + config.bot.prefix.length + 1).split(' ');
+        let tokens = message.content.substr(prefixMatch.index + prefixMatch[0].length).trim().split(' ');
         let cmd    = tokens.shift().trim();
-        console.log(cmd);
         for (let command of commands) {
             if (command.commands.some(c => c === cmd)) {
                 let result = await attemptCommand(message, command, tokens.join(' '));
