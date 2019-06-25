@@ -18,6 +18,7 @@ exports.default = {
     name: 'Snap',
     commands: ['snap'],
     description: 'Eliminates users not matching a certain criteria from the guild.',
+    permissions: ['BAN_MEMBERS'],
     requiresGuildContext: true,
     parameters: [{
             name: 'Count',
