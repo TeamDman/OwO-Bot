@@ -1,6 +1,6 @@
 {
     "bot": {
-        "prefix": "OwO",
+        "prefix": "OwO\\s+",
         "log file": "logs.txt",
         "presence": "nothing",
         "presence type": 0,

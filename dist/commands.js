@@ -158,11 +158,11 @@ function onMessage(message) {
                 return;
             if (message.channel.type !== 'text')
                 logger.info(logger.formatMessageToString(message));
-            if (message.content.match(config_1.default.bot.prefix) === null)
+            const prefixMatch = message.content.match(config_1.default.bot.prefix);
+            if (prefixMatch === null)
                 return;
-            let tokens = message.content.substr(message.content.match(config_1.default.bot.prefix).index + config_1.default.bot.prefix.length + 1).split(' ');
+            let tokens = message.content.substr(prefixMatch.index + prefixMatch[0].length).trim().split(' ');
             let cmd = tokens.shift().trim();
-            console.log(cmd);
             for (let command of commands) {
                 if (command.commands.some(c => c === cmd)) {
                     let result = yield attemptCommand(message, command, tokens.join(' '));
