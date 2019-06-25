@@ -7,6 +7,7 @@ import config                     from '../config';
 
 async function handle(message: Message) {
     if (message.author.bot) return false;
+    if (message.channel.type !== 'text') return false;
     if (!(message.guild.id in config['anti-mention']['whitelist'])) return;
     if (!message.content.match(config['anti-mention']['match'])) return;
     if (hasAdminRole(message.member))

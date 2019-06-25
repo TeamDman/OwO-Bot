@@ -17,6 +17,8 @@ function handle(message) {
     return __awaiter(this, void 0, void 0, function* () {
         if (message.author.bot)
             return false;
+        if (message.channel.type !== 'text')
+            return false;
         if (!(message.guild.id in config_1.default['anti-mention']['whitelist']))
             return;
         if (!message.content.match(config_1.default['anti-mention']['match']))
