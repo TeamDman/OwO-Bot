@@ -25,6 +25,10 @@
                 "452530315630477333": 1
             }
         },
+        "bot usage channel blacklists": {
+            "_comment": "Any guild with an entry here has the bot ignore input from the listed channels.",
+            "_comment": "Missing entry for a guild means all channels will work."
+        },
         "bot logger report channels": {
             "_comment": "For logging that isn't to console.",
             "_comment": "[Shinobu Cafe]:[#developers-talk]",

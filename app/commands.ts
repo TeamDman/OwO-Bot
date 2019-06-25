@@ -133,6 +133,7 @@ export async function onMessage(message: Message) {
     try {
         if (message.author.bot) return;
         if (message.channel.type === 'text' && message.guild.id in config.bot['bot usage channel whitelists'] && !(message.channel.id in config.bot['bot usage channel whitelists'][message.guild.id])) return;
+        if (message.channel.type === 'text' && message.guild.id in config.bot['bot usage channel blacklists'] && (message.channel.id in config.bot['bot usage channel blacklists'][message.guild.id])) return;
         if (message.channel.type !== 'text') logger.info(logger.formatMessageToString(message));
         if (message.content.match(config.bot.prefix) === null) return;
 

@@ -154,6 +154,8 @@ function onMessage(message) {
                 return;
             if (message.channel.type === 'text' && message.guild.id in config_1.default.bot['bot usage channel whitelists'] && !(message.channel.id in config_1.default.bot['bot usage channel whitelists'][message.guild.id]))
                 return;
+            if (message.channel.type === 'text' && message.guild.id in config_1.default.bot['bot usage channel blacklists'] && (message.channel.id in config_1.default.bot['bot usage channel blacklists'][message.guild.id]))
+                return;
             if (message.channel.type !== 'text')
                 logger.info(logger.formatMessageToString(message));
             if (message.content.match(config_1.default.bot.prefix) === null)
