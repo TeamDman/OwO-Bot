@@ -8,11 +8,12 @@ export function shouldPurge(member: GuildMember): boolean {
     if (member.user.bot)
         return false;
     let has = 0;
+    let g = Object.values(config.snap['must have more roles than these to not be purged']);
     for (let role of Object.values(config.snap['must have more roles than these to not be purged']))
         if (member.roles.has(role as string))
             has++;
     // If they only have those roles, then boot 'em.
-    return has === member.roles.size;
+    return has === member.roles.size - 1; // Subtract one for @everyone
 }
 
 export async function startPurge(context: TextChannel, count: number): Promise<void> {
@@ -30,15 +31,16 @@ export async function startPurge(context: TextChannel, count: number): Promise<v
     let reportText      = '';
     await report(context.guild, 'Snapped members:');
     let i = 0;
-    for (; purging && toPurge.length > 0; i++) {
+    while(purging && toPurge.length > 0) {
         let member = toPurge.pop();
         try {
             await purgeMember(member);
+            reportText += `${member.user.id} ${member}\n`;
+            i++;
         } catch (e) {
-            console.error(`Failed kicking user: ${e}`);
+            console.error(`Failed kicking user ${member}: ${e}`);
         }
-        reportText += `${member.user.id} ${member}\n`;
-        if (i % 10 == 0) {
+        if (i>0 && i % 10 == 0) {
             await progressMessage.edit(`Purging... ${Math.floor((i / startCount) * 100)}%`);
             await report(context.guild, reportText);
             reportText = '';
@@ -50,7 +52,7 @@ export async function startPurge(context: TextChannel, count: number): Promise<v
 }
 
 export async function purgeMember(member: GuildMember): Promise<void> {
-    if (config.snap_dm_message.length > 0) {
+    if (config.snap['dm message'].length > 0) {
         try {
             await member.send(config.snap['dm message']);
         } catch (e) {

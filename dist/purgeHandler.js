@@ -15,11 +15,12 @@ function shouldPurge(member) {
     if (member.user.bot)
         return false;
     let has = 0;
+    let g = Object.values(config_1.default.snap['must have more roles than these to not be purged']);
     for (let role of Object.values(config_1.default.snap['must have more roles than these to not be purged']))
         if (member.roles.has(role))
             has++;
     // If they only have those roles, then boot 'em.
-    return has === member.roles.size;
+    return has === member.roles.size - 1; // Subtract one for @everyone
 }
 exports.shouldPurge = shouldPurge;
 function startPurge(context, count) {
@@ -38,16 +39,17 @@ function startPurge(context, count) {
         let reportText = '';
         yield logger_1.report(context.guild, 'Snapped members:');
         let i = 0;
-        for (; purging && toPurge.length > 0; i++) {
+        while (purging && toPurge.length > 0) {
             let member = toPurge.pop();
             try {
                 yield purgeMember(member);
+                reportText += `${member.user.id} ${member}\n`;
+                i++;
             }
             catch (e) {
-                console.error(`Failed kicking user: ${e}`);
+                console.error(`Failed kicking user ${member}: ${e}`);
             }
-            reportText += `${member.user.id} ${member}\n`;
-            if (i % 10 == 0) {
+            if (i > 0 && i % 10 == 0) {
                 yield progressMessage.edit(`Purging... ${Math.floor((i / startCount) * 100)}%`);
                 yield logger_1.report(context.guild, reportText);
                 reportText = '';
@@ -61,7 +63,7 @@ function startPurge(context, count) {
 exports.startPurge = startPurge;
 function purgeMember(member) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (config_1.default.snap_dm_message.length > 0) {
+        if (config_1.default.snap['dm message'].length > 0) {
             try {
                 yield member.send(config_1.default.snap['dm message']);
             }
