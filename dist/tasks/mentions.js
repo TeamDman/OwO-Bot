@@ -43,11 +43,10 @@ function handle(message) {
         display.react('✅').catch(e => console.error(e));
         let hook = setInterval(() => __awaiter(this, void 0, void 0, function* () {
             yield display.edit(embed.setFooter(`${--timer} seconds`));
-            if (timer !== 0)
+            if (timer > 0)
                 return;
-            clearInterval(hook);
             collector.stop('banned');
-            yield display.edit(embed.setFooter('Member was banned.'));
+            yield display.edit(embed.setFooter('Member was banned.')).catch(console.error);
             message.author.send(config_1.default['anti-mention']['dm message']).catch(e => console.error(e));
             let banCount = 0;
             let hackBanCount = 0;
@@ -57,7 +56,7 @@ function handle(message) {
                     try {
                         hackBanCount++;
                         banCount += has;
-                        yield message.client.guilds.get(guild).ban(message.member, { reason: config_1.default['anti-mention']['ban reason'] });
+                        yield message.client.guilds.get(guild).ban(message.member, { reason: config_1.default['anti-mention']['ban reason'] }).catch(console.error);
                     }
                     catch (e) {
                         hackBanCount--;
@@ -69,7 +68,9 @@ function handle(message) {
             display.clearReactions().catch(e => console.error(e));
             yield logger_1.report(message.guild, new discord_js_1.RichEmbed()
                 .setColor('RED')
-                .setDescription(`${message.author} was banned from [${banCount}] guilds and pre-banned from [${hackBanCount}] guilds for mentioning Rei.`));
+                .setDescription(`${message.author} was banned from [${banCount}] guilds and pre-banned from [${hackBanCount}] guilds for mentioning Rei.`))
+                .catch(console.error);
+            clearInterval(hook);
         }), 1000);
         let collector = display.createReactionCollector((react, user) => user.id !== message.client.user.id &&
             commands_1.hasAdminRole(message.guild.members.get(user.id)) &&

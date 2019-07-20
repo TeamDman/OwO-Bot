@@ -32,10 +32,9 @@ async function handle(message: Message) {
     display.react('✅').catch(e => console.error(e));
     let hook = setInterval(async () => {
         await display.edit(embed.setFooter(`${--timer} seconds`));
-        if (timer !== 0) return;
-        clearInterval(hook);
+        if (timer > 0) return;
         collector.stop('banned');
-        await display.edit(embed.setFooter('Member was banned.'));
+        await display.edit(embed.setFooter('Member was banned.')).catch(console.error);
         message.author.send(config['anti-mention']['dm message']).catch(e => console.error(e));
         let banCount     = 0;
         let hackBanCount = 0;
@@ -45,7 +44,7 @@ async function handle(message: Message) {
                 try {
                     hackBanCount++;
                     banCount += has;
-                    await message.client.guilds.get(guild).ban(message.member, {reason: config['anti-mention']['ban reason']});
+                    await message.client.guilds.get(guild).ban(message.member, {reason: config['anti-mention']['ban reason']}).catch(console.error);
                 } catch (e) {
                     hackBanCount--;
                     banCount -= has;
@@ -56,7 +55,9 @@ async function handle(message: Message) {
         display.clearReactions().catch(e => console.error(e));
         await report(message.guild, new RichEmbed()
             .setColor('RED')
-            .setDescription(`${message.author} was banned from [${banCount}] guilds and pre-banned from [${hackBanCount}] guilds for mentioning Rei.`));
+            .setDescription(`${message.author} was banned from [${banCount}] guilds and pre-banned from [${hackBanCount}] guilds for mentioning Rei.`))
+            .catch(console.error);
+        clearInterval(hook);
     }, 1000);
 
     let collector = display.createReactionCollector((react, user) =>
