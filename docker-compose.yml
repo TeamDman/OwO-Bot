@@ -7,3 +7,4 @@ services:
         build: ./
         environment:
             DISCORD_TOKEN: ${DISCORD_TOKEN}
+            GITHUB_TOKEN: ${GITHUB_TOKEN}
