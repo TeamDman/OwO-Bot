@@ -3,7 +3,7 @@ version: "3.7"
 services:
     bot:
         container_name: "OwO-Bot"
-        image: teamdman/owo-bot
+        image: teamdman/owo-bot:impl-owo-latest
         build: ./
         environment:
             DISCORD_TOKEN: ${DISCORD_TOKEN}
