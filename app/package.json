@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "build": "node node_modules/typescript/bin/tsc --downlevelIteration",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "serve": "./node_modules/.bin/tsc-watch --onSuccess \"npm run start\""
   },
   "repository": {
     "type": "git",
@@ -16,13 +17,14 @@
   "bugs": {
     "url": "https://github.com/TeamDman/OwO-Bot/issues"
   },
-  "homepage": "https://github.com/TeamDman/OwO-Bot#readme",
+  "homepage": "https://github.com/TeamDman/OwO-Bot",
   "dependencies": {
     "discord.js": "^11.4.2",
     "dotenv": "^6.2.0",
     "typescript": "^3.4.4"
   },
   "devDependencies": {
-    "@types/node": "^11.13.6"
+    "@types/node": "^11.13.6",
+    "tsc-watch": "^4.0.0"
   }
 }

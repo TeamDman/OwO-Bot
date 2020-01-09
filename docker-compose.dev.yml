@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+    bot:
+        container_name: "OwO-Bot"
+        image: teamdman/owo-bot
+        build: ./
+        environment:
+            DISCORD_TOKEN: ${DISCORD_TOKEN}
+        volumes:
+            - ./app/:/app:delegated
+            - /app/node_modules/
+        command: "npm run serve"
