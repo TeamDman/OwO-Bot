@@ -1,4 +1,4 @@
-import {Command, CommandExecutor} from '../index';
+import {Command, CommandExecutor} from '../../index';
 import {inspect}                  from 'util';
 import {RichEmbed}                from 'discord.js';
 

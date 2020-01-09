@@ -1,5 +1,5 @@
-import {Command, CommandExecutor} from '../index';
-import {hackBan, unHackBan}       from '../utils';
+import {Command, CommandExecutor} from '../../index';
+import {hackBan, unHackBan}       from '../../utils';
 
 const invoke: CommandExecutor = async (message, args) => {
     return await unHackBan(message.client, args.shift(), args.shift());

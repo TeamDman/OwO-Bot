@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const commands_1 = require("../commands");
-const config_1 = require("../config");
+const commands_1 = require("../../commands");
+const config_1 = require("../../config");
 const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
     if (args[0] === '')
         return new discord_js_1.RichEmbed()
@@ -42,7 +42,7 @@ const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
 });
 exports.default = {
     name: 'Help',
-    commands: ['help', 'info', 'cmds', 'commands'],
+    commands: ['help', 'cmds', 'commands'],
     description: 'Displays command information.',
     parameters: [{
             name: 'Command Name',

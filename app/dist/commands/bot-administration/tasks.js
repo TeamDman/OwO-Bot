@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const tasks = require("../tasks");
+const tasks = require("../../tasks");
 const discord_js_1 = require("discord.js");
 const invoke = ((message, route, args) => __awaiter(this, void 0, void 0, function* () {
     switch (route) {

@@ -11,21 +11,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const logger = require("./logger");
 const utils = require("./utils");
 const config_1 = require("./config");
+const fs_1 = require("fs");
+const path_1 = require("path");
 const commands = [];
 function getCommands() {
     return commands;
 }
 exports.getCommands = getCommands;
 function init() {
-    require('fs').readdir(__dirname + '/commands/', (err, files) => {
-        if (err)
-            return logger.error(err);
-        files.forEach(file => {
-            if (!file.endsWith('.js'))
-                return;
-            commands.push(require(`./commands/${file}`).default);
+    function register(file, stats) {
+        if (!file.endsWith('.js'))
+            return;
+        commands.push(require(`${file}`).default);
+    }
+    function walk(dir) {
+        require('fs').readdir(dir, (err, files) => {
+            if (err)
+                return logger.error(err);
+            files.forEach(file => {
+                const filepath = path_1.join(dir, file);
+                fs_1.stat(filepath, (err, stats) => {
+                    if (stats.isDirectory())
+                        walk(filepath);
+                    else if (stats.isFile())
+                        register(filepath, stats);
+                });
+            });
         });
-    });
+    }
+    walk(__dirname + "/commands/");
 }
 exports.init = init;
 function hasPermissions(member, perms) {

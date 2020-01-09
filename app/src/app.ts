@@ -16,7 +16,7 @@ let loading = setInterval(() => process.stdout.write('.'), 500);
 
 dotenvInit();
 
-const client = new discord.Client();
+export const client = new discord.Client();
 client.on('ready', () => {
     clearInterval(loading);
     console.log();

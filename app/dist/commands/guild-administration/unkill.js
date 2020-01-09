@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("../utils");
+const utils_1 = require("../../utils");
 const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
     return yield utils_1.unHackBan(message.client, args.shift(), args.shift());
 });

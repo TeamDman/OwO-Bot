@@ -3,6 +3,8 @@ import {Command, Parameter, ParameterizedCommand, Permission, RoutedCommand, Sim
 import * as logger                                                                          from './logger';
 import * as utils                                                                           from './utils';
 import config                                                                               from './config';
+import { fstat, stat } from 'fs';
+import { join } from "path";
 
 const commands: Command[] = [];
 
@@ -11,13 +13,26 @@ export function getCommands(): Command[] {
 }
 
 export function init() {
-    require('fs').readdir(__dirname + '/commands/', (err, files) => {
-        if (err) return logger.error(err);
-        files.forEach(file => {
-            if (!file.endsWith('.js')) return;
-            commands.push(require(`./commands/${file}`).default);
+    function register(file, stats) {
+        if (!file.endsWith('.js')) return;
+        commands.push(require(`${file}`).default);
+    }
+
+    function walk(dir) {
+        require('fs').readdir(dir, (err, files) => {
+            if (err) return logger.error(err);
+            files.forEach(file => {
+                const filepath = join(dir, file);
+                stat(filepath, (err, stats) => {
+                    if (stats.isDirectory()) 
+                        walk(filepath);
+                    else if (stats.isFile())
+                        register(filepath, stats)
+                });
+            })
         });
-    });
+    }
+    walk(__dirname + "/commands/");
 }
 
 export function hasPermissions(member: GuildMember, perms: Permission[]) {

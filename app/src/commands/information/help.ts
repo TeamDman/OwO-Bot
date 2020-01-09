@@ -1,7 +1,7 @@
-import {Command, CommandExecutor, Parameter} from '../index';
+import {Command, CommandExecutor, Parameter} from '../../index';
 import {Message, RichEmbed}                  from 'discord.js';
-import {getCommands}                         from '../commands';
-import config                                from '../config';
+import {getCommands}                         from '../../commands';
+import config                                from '../../config';
 
 const invoke: CommandExecutor = async (message: Message, args: any[]) => {
     if (args[0] === '')
@@ -38,7 +38,7 @@ const invoke: CommandExecutor = async (message: Message, args: any[]) => {
 
 export default {
     name:        'Help',
-    commands:    ['help', 'info', 'cmds', 'commands'],
+    commands:    ['help', 'cmds', 'commands'],
     description: 'Displays command information.',
     parameters:  [{
         name:        'Command Name',

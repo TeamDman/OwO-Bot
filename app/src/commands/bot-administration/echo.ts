@@ -1,5 +1,5 @@
-import {Command, CommandExecutor} from '../index';
-import {cleanContent}                                   from '../utils';
+import {Command, CommandExecutor} from '../../index';
+import {cleanContent}                                   from '../../utils';
 
 const invoke: CommandExecutor = async (message, args) => cleanContent(message, args.shift());
 

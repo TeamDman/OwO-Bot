@@ -8,17 +8,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("../utils");
-const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () { return utils_1.cleanContent(message, args.shift()); });
+const discord_js_1 = require("discord.js");
+const info = require("../../../package.json");
+const invoke = (message, args) => __awaiter(this, void 0, void 0, function* () {
+    return new discord_js_1.RichEmbed()
+        .setTitle('Bot Info')
+        .addField("Author", info.author)
+        .addField("Version", info.version)
+        .addField("Repository", info.repository.url);
+});
 exports.default = {
-    name: 'Echo',
-    commands: ['echo', 'say'],
-    description: 'Prints a given line to the chat.',
-    permissions: ['MANAGE_MESSAGES'],
+    name: 'Help',
+    commands: ['info'],
+    description: 'Displays command information.',
     parameters: [{
-            name: 'Message',
+            name: 'Bot Info',
+            description: 'Displays information about the bot\'s current status.',
             type: 'STRING'
         }],
     executor: invoke
 };
-//# sourceMappingURL=echo.js.map
+//# sourceMappingURL=info.js.map

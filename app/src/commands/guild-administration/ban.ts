@@ -1,4 +1,4 @@
-import {Command, CommandExecutor} from '../index';
+import {Command, CommandExecutor} from '../../index';
 import {RichEmbed}                from 'discord.js';
 
 const invoke: CommandExecutor = async (message, args) => {
