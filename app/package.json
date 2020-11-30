@@ -8,6 +8,7 @@
     "serve": "tsc-watch --onSuccess \"npm run start\""
   },
   "dependencies": {
+    "discord.js": "^12.5.1",
     "jsdom": "^16.4.0",
     "node-fetch": "^2.6.1",
     "set-cookie-parser": "^2.4.6",

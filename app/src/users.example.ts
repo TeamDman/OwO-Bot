@@ -1,4 +1,4 @@
-import { User } from "./index.d";
+import { User } from "./workout.d";
 
 export const users: User[] = [
     {

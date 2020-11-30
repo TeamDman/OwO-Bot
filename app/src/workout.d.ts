@@ -3,6 +3,8 @@ import { Cookie } from "set-cookie-parser";
 interface User {
     name: string;
     creds: UserCredential;
+    latestSlots?: UserTimeSlotInfo;
+    restDays?: Date[];
 }
 
 interface UserTimeSlotInfo {
