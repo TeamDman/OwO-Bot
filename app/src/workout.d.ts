@@ -3,7 +3,9 @@ import { Cookie } from "set-cookie-parser";
 interface User {
     name: string;
     creds: UserCredential;
+    discordId: string;
     latestSlots?: UserTimeSlotInfo;
+    latestCookie?: UserCookie;
     restDays?: Date[];
 }
 

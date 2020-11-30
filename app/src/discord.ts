@@ -1,7 +1,7 @@
-import { Client, MessageEmbed, } from "discord.js";
+import { Client, MessageEmbed, ReactionCollector, } from "discord.js";
 import { token } from "./token";
 import { users } from "./users";
-import { dayNames, getTimeSlotDate, isSameDay } from "./workout";
+import { dayNames, getTimeSlotDate, isSameDay, toggleRestDay } from "./workout";
 
 
 const dayEmojis = ["🥞", "🧇", "🍋", "🍞", "🥐", "🥖", "🥨"]
@@ -13,7 +13,7 @@ export function start() {
     });
     client.on("message", async msg => {
         try {
-            if (msg.channel.id !== "677334390963175434") return;
+            if (msg.channel.id !== "677334390963175434" && msg.channel.id !== "432713268755300382") return;
             if (msg.mentions.users.has("782831608964710400")) {
                 msg.react("606522709475590194");
             }
@@ -42,10 +42,30 @@ export function start() {
                 }
                 const embedMsg = await msg.channel.send(embed);
                 date.setTime(Date.now());
+                const emojiLookup:Record<string, Date> = {};
                 for (let i = 0; i < 3; i++) {
-                    await embedMsg.react(dayEmojis[date.getDay()]);
-                    date.setDate(date.getDate()+1);
+                    const emoji = dayEmojis[date.getDay()];
+                    await embedMsg.react(emoji);
+                    emojiLookup[emoji] = new Date(date);
+                    date.setDate(date.getDate() + 1);
                 }
+                const collector = new ReactionCollector(
+                    embedMsg, 
+                    () => true,
+                    { time: 180000 }
+                );
+                collector.on("collect", (reaction, user) => {
+                    const workoutUser = users.find(u => u.discordId === user.id);
+                    if (workoutUser) {
+                        const isResting = toggleRestDay(workoutUser, emojiLookup[reaction.emoji.name]);
+                        const dayName = dayNames[dayEmojis.findIndex(e => e === reaction.emoji.name)];
+                        if (isResting) {
+                            reaction.message.channel.send(`<@${workoutUser.discordId}> is now resting this ${dayName}. Auto-booking disabled. `);
+                        } else {
+                            reaction.message.channel.send(`<@${workoutUser.discordId}> is no longer resting this ${dayName}. Auto-booking enabled.`);
+                        }
+                    }
+                });
             }
         } catch (e) {
             console.log("Error encountered handling message");
