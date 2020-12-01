@@ -142,8 +142,8 @@ function setCookieDate(user: User, date: string): UserCookie {
 
 export function isSameDay(first: Date, second: Date) {
     return first.getFullYear() === second.getFullYear() &&
-    first.getMonth() === second.getMonth() &&
-    first.getDate() === second.getDate();
+        first.getMonth() === second.getMonth() &&
+        first.getDate() === second.getDate();
 }
 
 export const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -172,35 +172,44 @@ function formatHours(date: Date) {
 
 export function toggleRestDay(user: User, date: Date): boolean {
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate()-1);
+    yesterday.setDate(yesterday.getDate() - 1);
     user.restDays = user.restDays?.filter(d => d > yesterday) ?? []
     if (user.restDays.find(rest => isSameDay(rest, date))) {
         user.restDays = user.restDays.filter(rest => !isSameDay(rest, date));
         return false;
-    }  else {
+    } else {
         user.restDays.push(date);
         return true;
     }
 }
 
+export const nextCheck = new Date();
+export async function sync() {
+    for (const user of users) {
+        const slots = await ensureWorkoutsBooked(user);
+        for (const slot of slots.reservations) {
+            const endDate = new Date(Date.parse(slot.date + " " + slot.time.substr(3)));
+            endDate.setTime(endDate.getTime() + 1000 * 60 * 60); // ensure date is at end of workout
+            if (nextCheck > endDate) {
+                nextCheck.setTime(endDate.getTime());
+            }
+        }
+        user.latestSlots = slots;
+    }
+}
+
 export async function main() {
-    const nextCheck = new Date();
     while (true) {
         if (Date.now() < nextCheck.getTime()) {
             await sleep(1000);
             continue;
         }
-        nextCheck.setTime(Date.now() + 1000*60*30); // check again in half an hour
-        for (const user of users) {
-            const slots = await ensureWorkoutsBooked(user);
-            for (const slot of slots.reservations) {
-                const endDate = new Date(Date.parse(slot.date + " " + slot.time.substr(3)));
-                endDate.setTime(endDate.getTime() + 1000 * 60 * 60); // ensure date is at end of workout
-                if (nextCheck > endDate) {
-                    nextCheck.setTime(endDate.getTime());
-                }
-            }
-            user.latestSlots = slots;
+        nextCheck.setTime(Date.now() + 1000 * 60 * 30); // check again in half an hour
+        try {
+            await sync();
+        } catch (e) {
+            console.log("Error encountered performing sync");
+            console.error(e);
         }
         console.log(`Checking again at ${toISOString(nextCheck)} (${dayNames[nextCheck.getDay()]}) ${formatHours(nextCheck)}`)
     }
