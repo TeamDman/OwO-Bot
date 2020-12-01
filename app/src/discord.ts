@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed, ReactionCollector, } from "discord.js";
+import { Client, Message, MessageEmbed, ReactionCollector, TextChannel, } from "discord.js";
 import { token } from "./token";
 import { users } from "./users";
 import { dayNames, getTimeSlotDate, isSameDay, toggleRestDay, sync } from "./workout";
@@ -10,9 +10,9 @@ const dayEmojis = ["🥞", "🧇", "🍋", "🍞", "🥐", "🥖", "🥨"]
 export function buildEmbed(): MessageEmbed {
     const date = new Date();
     const embed = new MessageEmbed()
-    .setColor("#F3B233")
-    .setTitle("Fit4Less Summary")
-    .setURL("https://myfit4less.gymmanager.com/portal/booking/index.asp")
+        .setColor("#F3B233")
+        .setTitle("Fit4Less Summary")
+        .setURL("https://myfit4less.gymmanager.com/portal/booking/index.asp")
     for (let i = 0; i < 3; i++) {
         const header = dayNames[date.getDay()];
         let body = users.filter(user => user.latestSlots)
@@ -37,15 +37,18 @@ function buildCollector(embedMessage: Message, emojiLookup: Record<string, Date>
     const collector = new ReactionCollector(
         embedMessage,
         () => true,
-        { time: 180000 }
+        { time: 1000*60*5 }
     );
     collector.on("collect", async (reaction, user) => {
         const workoutUser = users.find(u => u.discordId === user.id);
         if (!workoutUser) return;
         if (reaction.emoji.name === syncEmoji) {
+            await embedMessage.edit("Updating...");
             await sync();
+            await embedMessage.edit("Updated.");
             await embedMessage.edit(buildEmbed());
         } else {
+            if (!emojiLookup[reaction.emoji.name]) return;
             const isResting = toggleRestDay(workoutUser, emojiLookup[reaction.emoji.name]);
             const dayName = dayNames[dayEmojis.findIndex(e => e === reaction.emoji.name)];
             if (isResting) {
@@ -55,11 +58,30 @@ function buildCollector(embedMessage: Message, emojiLookup: Record<string, Date>
             }
         }
     });
+    collector.on("end", async ()=> {
+        await embedMessage.reactions.removeAll();
+    })
     return collector;
 }
 
+let client: Client;
+export function getClient() {
+    return client;
+}
+
+export async function broadcast(message) {
+    try {
+        const guild = await client.guilds.cache.get("431514494750031882");
+        const channel = await guild.channels.cache.get("677334390963175434") as TextChannel;
+        await channel.send(message);
+    } catch (e) {
+        console.log("Error broadcasting message to channel");
+        console.error(e);
+    }
+}
+
 export function start() {
-    const client = new Client();
+    client = new Client();
     client.login(token)
     client.on("ready", () => {
         console.log(`Discord client ready as ${client.user.tag}`);

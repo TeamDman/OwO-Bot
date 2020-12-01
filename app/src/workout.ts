@@ -3,6 +3,7 @@ import fetch from "node-fetch"
 import setCookieParser from "set-cookie-parser";
 import { User, UserCookie, TimeSlot, UserCredential, UserTimeSlotInfo } from "./workout.d"
 import { users } from "./users";
+import { broadcast } from "./discord";
 function encodeFormData(data: string): string {
     return encodeURIComponent(data).replace(/%20/g, "+");
 }
@@ -70,6 +71,8 @@ async function getTimeSlots(user: User, responseText?: string): Promise<UserTime
         });
         text = await resp.text();
     }
+    // console.log(`Getting slots for ${user.name}`);
+    // console.log(text);
     const dom = new jsdom.JSDOM(text);
     const reservations = Array.from(dom.window.document.querySelectorAll(".reserved-slots > .time-slot")).map(x => parseTimeSlot(x));
     const availabilities = Array.from(dom.window.document.querySelectorAll(".available-slots > .time-slot")).map(x => parseTimeSlot(x));
@@ -99,33 +102,40 @@ async function reserveTimeSlot(user: User, slot: TimeSlot) {
     );
     const text = await resp.text();
     console.log(`Slot booked.`);
+    // console.log(text);
+    broadcast(`Reserving time slot ${slot.date} ${slot.time} (${dayNames[getTimeSlotDate(slot).getDay()]}) for <@${user.discordId}>.`);
     return await getTimeSlots(user, text);
 }
 
-async function reserveBestTimeSlot(user: User, date: Date, slots: UserTimeSlotInfo) {
-    if (slots.reservations.length >= 2) {
-        console.log(`[${user.name}] All reservations booked, skipping...`);
-        return slots;
+async function reserveBestTimeSlot(user: User, date: Date): Promise<void> {
+    if (user.latestSlots.reservations.some(slot => isSameDay(date, getTimeSlotDate(slot)))) {
+        console.log(`[${user.name}] Already booked this day, skipping...`);
+        return;
     }
-    if (slots.availabilities.length === 0) {
+    if (user.latestSlots.reservations.length >= 2) {
+        console.log(`[${user.name}] All reservations booked, skipping...`);
+        return;
+    }
+    if (user.latestSlots.availabilities.length === 0) {
         console.log(`[${user.name}] No slots available, skipping...`);
-        return slots;
+        return;
     }
     if (user.restDays?.find(rest => isSameDay(date, rest))) {
         console.log(`[${user.name}] Rest day, skipping...`);
-        return slots;
+        return;
     }
     const isWeekend = date.getDay() == 0 || date.getDay() == 6;
     const weekendPreferences = ["at 3:30 PM", "at 2:00 PM"];
     const weekdayPreferences = ["at 7:00 PM", "at 8:30 PM"];
     const targetTimes = isWeekend ? weekendPreferences : weekdayPreferences;
     const bestSlot: TimeSlot | undefined = targetTimes
-        .map(time => slots.availabilities
+        .map(time => user.latestSlots.availabilities
             .find(slot => slot.time === time))
         .find(slot => slot !== undefined);
     if (bestSlot !== undefined) {
         console.log(`Found preferred slot ${bestSlot.club} ${bestSlot.date} ${bestSlot.time}, booking...`);
-        return await reserveTimeSlot(user, bestSlot);
+        user.latestSlots = await reserveTimeSlot(user, bestSlot);
+        return;
     }
     console.log("No preferred slots found.");
 }
@@ -154,9 +164,9 @@ async function ensureWorkoutsBooked(user: User) {
     await loginUser(user);
     for (let i = 0; i < 3; i++) {
         setCookieDate(user, toISOString(targetDate));
-        slots = await getTimeSlots(user);
-        console.log(`[${user.name}] Reserving on date ${toISOString(targetDate)} (${dayNames[targetDate.getDay()]}). ${slots.reservations.length} reservations and ${slots.availabilities.length} availabilities.`);
-        slots = await reserveBestTimeSlot(user, targetDate, slots);
+        user.latestSlots = await getTimeSlots(user);
+        console.log(`[${user.name}] Reserving on date ${toISOString(targetDate)} (${dayNames[targetDate.getDay()]}). ${user.latestSlots.reservations.length} reservations and ${user.latestSlots.availabilities.length} availabilities.`);
+        await reserveBestTimeSlot(user, targetDate);
         targetDate.setDate(targetDate.getDate() + 1);
     }
     return slots;
@@ -185,16 +195,16 @@ export function toggleRestDay(user: User, date: Date): boolean {
 
 export const nextCheck = new Date();
 export async function sync() {
+    console.log(`Syncing ${users.length} users...`);
     for (const user of users) {
-        const slots = await ensureWorkoutsBooked(user);
-        for (const slot of slots.reservations) {
+        await ensureWorkoutsBooked(user);
+        for (const slot of user.latestSlots.reservations) {
             const endDate = new Date(Date.parse(slot.date + " " + slot.time.substr(3)));
             endDate.setTime(endDate.getTime() + 1000 * 60 * 60); // ensure date is at end of workout
             if (nextCheck > endDate) {
                 nextCheck.setTime(endDate.getTime());
             }
         }
-        user.latestSlots = slots;
     }
 }
 
