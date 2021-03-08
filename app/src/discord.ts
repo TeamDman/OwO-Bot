@@ -119,6 +119,8 @@ export function start() {
                 .messages("@original")
                 .patch({data});
 
+        const userId = interaction?.member?.user?.id ?? interaction?.user?.id;
+
         if (cmd.name === "info") {
             await respond({
                 type: 4,
@@ -140,7 +142,7 @@ export function start() {
                 embeds: [buildEmbed()]
             });
         } else if (cmd.name == "rest") {
-            const user = getUser(interaction?.member?.user?.id ?? interaction?.user?.id);
+            const user = getUser(userId);
             const day: Day = cmd.options[0].value;
             const date = getDateFromName(day);
             if (!user) {
@@ -158,12 +160,12 @@ export function start() {
                 type: 4,
                 data: {
                     content: isResting
-                     ? `<@${interaction.user.id}> is now resting on ${day}.`
-                     : `<@${interaction.user.id}> is no longer resting on ${day}.`
+                     ? `You are now resting on ${day}.`
+                     : `You are no longer resting on ${day}.`
                 }
             })
         } else if (cmd.name == "weekday-availability") {
-            const user = getUser(interaction?.member?.user?.id ?? interaction?.user?.id);
+            const user = getUser(userId);
             const action = cmd.options[0].value;
             const slot = cmd.options[1].value;
             if (!user) {
@@ -184,7 +186,7 @@ export function start() {
                 }
             })
         } else if (cmd.name == "weekend-availability") {
-            const user = getUser(interaction?.member?.user?.id ?? interaction?.user?.id);
+            const user = getUser(userId);
             const action = cmd.options[0].value;
             const slot = cmd.options[1].value;
             if (!user) {
