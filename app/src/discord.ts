@@ -1,7 +1,7 @@
 import { Client, DiscordAPIError, Message, MessageEmbed, ReactionCollector, TextChannel, } from "discord.js";
 import { token } from "./token";
-import { state, writeState, getUser, modifyAvailability } from "./persistance";
-import { getTimeSlotDate, toggleRestDay, sync } from "./workout";
+import { state, writeState, getUser, modifyAvailability, toggleRestDay } from "./persistance";
+import { getTimeSlotDate, sync } from "./workout";
 import { inspect } from "util";
 import { dayNames, Day, isSameDay, getDateFromName } from "./util";
 
