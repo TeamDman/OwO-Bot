@@ -2,3 +2,5 @@ node_modules
 dist
 users.ts
 token.ts
+state.json
+state-backup.json

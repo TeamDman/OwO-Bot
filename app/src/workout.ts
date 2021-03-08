@@ -2,8 +2,10 @@ import jsdom from "jsdom";
 import fetch from "node-fetch"
 import setCookieParser from "set-cookie-parser";
 import { User, UserCookie, TimeSlot, UserCredential, UserTimeSlotInfo } from "./workout.d"
-import { users } from "./users";
 import { broadcast } from "./discord";
+import { getPreferredSlots, state, writeState } from "./persistance";
+import { dayNames, isSameDay } from "./util";
+
 function encodeFormData(data: string): string {
     return encodeURIComponent(data).replace(/%20/g, "+");
 }
@@ -124,13 +126,14 @@ async function reserveBestTimeSlot(user: User, date: Date): Promise<void> {
         console.log(`[${user.name}] Rest day, skipping...`);
         return;
     }
-    const isWeekend = date.getDay() == 0 || date.getDay() == 6;
-    const weekendPreferences = ["at 3:30 PM", "at 2:00 PM"];
-    const weekdayPreferences = ["at 7:00 PM", "at 8:30 PM"];
-    const targetTimes = isWeekend ? weekendPreferences : weekdayPreferences;
+    // const isWeekend = date.getDay() == 0 || date.getDay() == 6;
+    // const weekendPreferences = ["at 3:30 PM", "at 2:00 PM"];
+    // const weekdayPreferences = ["at 7:00 PM", "at 8:30 PM"];
+    // const targetTimes = isWeekend ? weekendPreferences : weekdayPreferences;
+    const targetTimes = getPreferredSlots(user, date);
     const bestSlot: TimeSlot | undefined = targetTimes
         .map(time => user.latestSlots.availabilities
-            .find(slot => slot.time === time))
+            .find(slot => slot.time.match(time)))
         .find(slot => slot !== undefined);
     if (bestSlot !== undefined) {
         console.log(`Found preferred slot ${bestSlot.club} ${bestSlot.date} ${bestSlot.time}, booking...`);
@@ -150,13 +153,6 @@ function setCookieDate(user: User, date: string): UserCookie {
     return rtn;
 }
 
-export function isSameDay(first: Date, second: Date) {
-    return first.getFullYear() === second.getFullYear() &&
-        first.getMonth() === second.getMonth() &&
-        first.getDate() === second.getDate();
-}
-
-export const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 async function ensureWorkoutsBooked(user: User) {
     let targetDate = new Date(Date.now());
     let cookie: UserCookie;
@@ -195,8 +191,8 @@ export function toggleRestDay(user: User, date: Date): boolean {
 
 export const nextCheck = new Date();
 export async function sync() {
-    console.log(`Syncing ${users.length} users...`);
-    for (const user of users) {
+    console.log(`Syncing ${state.users.length} users...`);
+    for (const user of state.users) {
         await ensureWorkoutsBooked(user);
         for (const slot of user.latestSlots.reservations) {
             const endDate = new Date(Date.parse(slot.date + " " + slot.time.substr(3)));
@@ -206,6 +202,7 @@ export async function sync() {
             }
         }
     }
+    writeState();
 }
 
 export async function main() {

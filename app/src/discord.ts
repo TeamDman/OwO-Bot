@@ -1,8 +1,9 @@
 import { Client, DiscordAPIError, Message, MessageEmbed, ReactionCollector, TextChannel, } from "discord.js";
 import { token } from "./token";
-import { users } from "./users";
-import { dayNames, getTimeSlotDate, isSameDay, toggleRestDay, sync } from "./workout";
+import { state, writeState, getUser, modifyAvailability } from "./persistance";
+import { getTimeSlotDate, toggleRestDay, sync } from "./workout";
 import { inspect } from "util";
+import { dayNames, Day, isSameDay, getDateFromName } from "./util";
 
 const syncEmoji = "🔄";
 const dayEmojis = ["🥞", "🧇", "🍋", "🍞", "🥐", "🥖", "🥨"]
@@ -14,16 +15,25 @@ export function buildEmbed(): MessageEmbed {
         .setColor("#F3B233")
         .setTitle("Fit4Less Summary")
         .setURL("https://myfit4less.gymmanager.com/portal/booking/index.asp")
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < dayNames.length; i++) {
         const header = dayNames[date.getDay()];
-        let body = users.filter(user => user.latestSlots)
+        let body = state.users.filter(user => user.latestSlots)
             .map(user => ({
                 name: user.name,
                 slot: user.latestSlots.reservations
-                    .find(slot => isSameDay(getTimeSlotDate(slot), date))
+                    .find(slot => isSameDay(getTimeSlotDate(slot), date)),
+                rest: user.restDays.find(day => isSameDay(day, date))
             }))
-            .filter(user => user.slot)
-            .map(user => `(${user.slot.time}) ${user.name}`)
+            .filter(user => user.slot || user.rest)
+            .map(user => {
+                if (user.slot && user.rest) {
+                    return `(${user.slot.time}) ${user.name} (R)`
+                } else if (user.slot) {
+                    return `(${user.slot.time}) ${user.name}`
+                } else if (user.rest) {
+                    return `${user.name} (R)`
+                }
+            })
             .join("\n");
         if (body === "") {
             body = "None";
@@ -41,7 +51,7 @@ function buildCollector(embedMessage: Message, emojiLookup: Record<string, Date>
         { time: 1000*60*5 }
     );
     collector.on("collect", async (reaction, user) => {
-        const workoutUser = users.find(u => u.discordId === user.id);
+        const workoutUser = getUser(user.id);
         if (!workoutUser) return;
         if (reaction.emoji.name === syncEmoji) {
             await embedMessage.edit("Updating...");
@@ -57,6 +67,7 @@ function buildCollector(embedMessage: Message, emojiLookup: Record<string, Date>
             } else {
                 reaction.message.channel.send(`<@${workoutUser.discordId}> is no longer resting this ${dayName}. Auto-booking enabled.`);
             }
+            writeState();
         }
     });
     collector.on("end", async ()=> {
@@ -86,6 +97,114 @@ export function start() {
     client.login(token)
     client.on("ready", () => {
         console.log(`Discord client ready as ${client.user.tag}`);
+    });
+    client.ws.on("INTERACTION_CREATE" as any, async interaction => {
+        console.log(inspect(interaction,false,10));
+        // "812445651069042729"
+        if (interaction.data.name !== "fit") return;
+
+        let cmd = interaction.data.options[0];
+
+        const respond = async data => 
+            await (client as any)
+                .api
+                .interactions(interaction.id, interaction.token)
+                .callback
+                .post({data});
+
+        const update = async data => 
+            await (client as any)
+                .api
+                .webhooks(client.user.id, interaction.token)
+                .messages("@original")
+                .patch({data});
+
+        if (cmd.name === "info") {
+            await respond({
+                type: 4,
+                data: {
+                    embeds: [buildEmbed()]
+                }
+            });
+        } else if (cmd.name === "sync") {
+            await respond({
+                type: 4,
+                data: {
+                    content:"Updating..."
+                }
+            });
+            await sync();
+            // await new Promise((res, rej) => setTimeout(res, 3000));
+            await update({
+                content:"Updated.",
+                embeds: [buildEmbed()]
+            });
+        } else if (cmd.name == "rest") {
+            const user = getUser(interaction.user.id);
+            const day: Day = cmd.options[0].value;
+            const date = getDateFromName(day);
+            if (!user) {
+                await respond({
+                    type: 4,
+                    data: {
+                        content: "No workout user found."
+                    }
+                });
+                return;
+            }
+            const isResting = toggleRestDay(user, date);
+            writeState();
+            await respond({
+                type: 4,
+                data: {
+                    content: isResting
+                     ? `<@${interaction.user.id}> is now resting on ${day}.`
+                     : `<@${interaction.user.id}> is no longer resting on ${day}.`
+                }
+            })
+        } else if (cmd.name == "weekday-availability") {
+            const user = getUser(interaction.user.id);
+            const action = cmd.options[0].value;
+            const slot = cmd.options[1].value;
+            if (!user) {
+                await respond({
+                    type: 4,
+                    data: {
+                        content: "No workout user found."
+                    }
+                });
+                return;
+            }
+            modifyAvailability(user, "weekday", action, slot);
+            writeState();
+            await respond({
+                type: 4,
+                data: {
+                    content:`${action === "add" ? "Added" : "Removed"} ${slot} to your weekday preferences.`
+                }
+            })
+        } else if (cmd.name == "weekend-availability") {
+            const user = getUser(interaction.user.id);
+            const action = cmd.options[0].value;
+            const slot = cmd.options[1].value;
+            if (!user) {
+                await respond({
+                    type: 4,
+                    data: {
+                        content: "No workout user found."
+                    }
+                });
+                return;
+            }
+            modifyAvailability(user, "weekend", action, slot);
+            writeState();
+            await respond({
+                type: 4,
+                data: {
+                    content:`${action === "add" ? "Added" : "Removed"} ${slot} to your weekend preferences.`
+                }
+            })
+        }
     });
     client.on("message", async msg => {
         try {

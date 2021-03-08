@@ -6,6 +6,8 @@ interface User {
     discordId: string;
     latestSlots?: UserTimeSlotInfo;
     latestCookie?: UserCookie;
+    weekendPreferences?: Array<string>;
+    weekdayPreferences?: Array<string>;
     restDays?: Date[];
 }
 
