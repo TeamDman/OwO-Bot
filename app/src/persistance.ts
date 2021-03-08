@@ -48,9 +48,9 @@ function pruneRestDays() {
  * Update user's state with rest day preference.
  * Returns True if now resting
  */
-export function toggleRestDay(user: User, date: Date): boolean {
+export function toggleRestDay(user: User, date: Date, forceRest?: boolean): boolean {
     const alreadyResting = user.restDays.find(rest => isSameDay(rest, date));
-    if (alreadyResting) {
+    if (alreadyResting && !forceRest) {
         user.restDays = user.restDays.filter(rest => !isSameDay(rest, date));
         return false;
     } else {

@@ -3,7 +3,7 @@ import fetch from "node-fetch"
 import setCookieParser from "set-cookie-parser";
 import { User, UserCookie, TimeSlot, UserCredential, UserTimeSlotInfo } from "./workout.d"
 import { broadcast } from "./discord";
-import { getPreferredSlots, state, writeState } from "./persistance";
+import { getPreferredSlots, state, toggleRestDay, writeState } from "./persistance";
 import { dayNames, isSameDay } from "./util";
 
 function encodeFormData(data: string): string {
@@ -138,6 +138,7 @@ async function reserveBestTimeSlot(user: User, date: Date): Promise<void> {
     if (bestSlot !== undefined) {
         console.log(`Found preferred slot ${bestSlot.club} ${bestSlot.date} ${bestSlot.time}, booking...`);
         user.latestSlots = await reserveTimeSlot(user, bestSlot);
+        toggleRestDay(user, date, true);
         return;
     }
     console.log("No preferred slots found.");
@@ -174,19 +175,6 @@ function sleep(ms) {
 
 function formatHours(date: Date) {
     return `${date.getHours()}:${date.getMinutes() < 10 ? "0" : ""}${date.getMinutes()}`;
-}
-
-export function toggleRestDay(user: User, date: Date): boolean {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    user.restDays = user.restDays?.filter(d => d > yesterday) ?? []
-    if (user.restDays.find(rest => isSameDay(rest, date))) {
-        user.restDays = user.restDays.filter(rest => !isSameDay(rest, date));
-        return false;
-    } else {
-        user.restDays.push(date);
-        return true;
-    }
 }
 
 export const nextCheck = new Date();
