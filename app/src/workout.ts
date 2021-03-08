@@ -126,10 +126,6 @@ async function reserveBestTimeSlot(user: User, date: Date): Promise<void> {
         console.log(`[${user.name}] Rest day, skipping...`);
         return;
     }
-    // const isWeekend = date.getDay() == 0 || date.getDay() == 6;
-    // const weekendPreferences = ["at 3:30 PM", "at 2:00 PM"];
-    // const weekdayPreferences = ["at 7:00 PM", "at 8:30 PM"];
-    // const targetTimes = isWeekend ? weekendPreferences : weekdayPreferences;
     const targetTimes = getPreferredSlots(user, date);
     const bestSlot: TimeSlot | undefined = targetTimes
         .map(time => user.latestSlots.availabilities
@@ -138,7 +134,7 @@ async function reserveBestTimeSlot(user: User, date: Date): Promise<void> {
     if (bestSlot !== undefined) {
         console.log(`Found preferred slot ${bestSlot.club} ${bestSlot.date} ${bestSlot.time}, booking...`);
         user.latestSlots = await reserveTimeSlot(user, bestSlot);
-        toggleRestDay(user, date, true);
+        // toggleRestDay(user, date, true);
         return;
     }
     console.log("No preferred slots found.");
