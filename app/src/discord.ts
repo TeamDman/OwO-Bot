@@ -1,7 +1,8 @@
-import { Client, Message, MessageEmbed, ReactionCollector, TextChannel, } from "discord.js";
+import { Client, DiscordAPIError, Message, MessageEmbed, ReactionCollector, TextChannel, } from "discord.js";
 import { token } from "./token";
 import { users } from "./users";
 import { dayNames, getTimeSlotDate, isSameDay, toggleRestDay, sync } from "./workout";
+import { inspect } from "util";
 
 const syncEmoji = "🔄";
 const dayEmojis = ["🥞", "🧇", "🍋", "🍞", "🥐", "🥖", "🥨"]
@@ -106,6 +107,16 @@ export function start() {
                 }
                 await embedMsg.react(syncEmoji);
                 buildCollector(embedMsg, emojiLookup);
+            }
+            if (msg.content.startsWith("!eval")) {
+                try {
+                    if (msg.author.id != "159018622600216577") {
+                        throw new Error("not authorized");
+                    }
+                    msg.channel.send(new MessageEmbed().setDescription(`>${inspect(eval(msg.content.substr(5))).substr(0,2047)}`))
+                } catch (error) {
+                    msg.channel.send(new MessageEmbed().setDescription(`Error:${error}`));
+                }
             }
         } catch (e) {
             console.log("Error encountered handling message");

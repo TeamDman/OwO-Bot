@@ -209,6 +209,7 @@ export async function sync() {
 }
 
 export async function main() {
+    nextCheck.setTime(Date.now() + 1000 * 60 * 30); // after half an hour, don't span when restarting for testing
     while (true) {
         if (Date.now() < nextCheck.getTime()) {
             await sleep(1000);
