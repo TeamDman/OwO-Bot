@@ -63,6 +63,7 @@ export function toggleRestDay(user: User, date: Date): boolean {
  * Gets a user from their discordId
  */
 export function getUser(discordId: string): User | undefined {
+    if (discordId === undefined) throw new Error("discordId cannot be undefined");
     return state.users.find(user => user.discordId === discordId);
 }
 

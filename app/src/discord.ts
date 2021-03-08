@@ -140,7 +140,7 @@ export function start() {
                 embeds: [buildEmbed()]
             });
         } else if (cmd.name == "rest") {
-            const user = getUser(interaction.user.id);
+            const user = getUser(interaction?.member?.user?.id ?? interaction?.user?.id);
             const day: Day = cmd.options[0].value;
             const date = getDateFromName(day);
             if (!user) {
@@ -163,7 +163,7 @@ export function start() {
                 }
             })
         } else if (cmd.name == "weekday-availability") {
-            const user = getUser(interaction.user.id);
+            const user = getUser(interaction?.member?.user?.id ?? interaction?.user?.id);
             const action = cmd.options[0].value;
             const slot = cmd.options[1].value;
             if (!user) {
@@ -184,7 +184,7 @@ export function start() {
                 }
             })
         } else if (cmd.name == "weekend-availability") {
-            const user = getUser(interaction.user.id);
+            const user = getUser(interaction?.member?.user?.id ?? interaction?.user?.id);
             const action = cmd.options[0].value;
             const slot = cmd.options[1].value;
             if (!user) {
