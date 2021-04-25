@@ -1,1 +1,2 @@
-export const token = "####.####.####";
+export const discordToken = "####.####.####";
+export const gptToken = "#####";
