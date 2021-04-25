@@ -8,6 +8,10 @@ export function getClient() {
     return client;
 }
 let lines = [];
+let allowedChannels = [
+    "432713268755300382", // guh
+    "835743861892579378", // raddest
+]
 export async function start() {
     const openai = new OpenAI(gptToken);
     client = new Client();
@@ -17,7 +21,7 @@ export async function start() {
     });
     client.on("message", async msg => {
         try {
-            if (msg.channel.id !== "432713268755300382") return;
+            if (!allowedChannels.includes(msg.channel.id)) return;
             if (msg.author.id === "431980306111660062") return;
             if (msg.content.startsWith("!eval")) {
                 try {
